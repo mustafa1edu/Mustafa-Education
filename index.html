@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#005baa">
+    <meta name="description" content="Soran University Portal for LMS and SIS access">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Soran University Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --soran-blue: #005baa;
+            --soran-yellow: #ffd700;
+            --soran-red: #e31937;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            color: var(--soran-blue);
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 450px;
+            margin-bottom: 20px;
+        }
+        
+        .main-btn {
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .main-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background-color: #004a8a;
+        }
+        
+        .faq-btn {
+            background-color: var(--soran-red);
+        }
+        
+        .faq-btn:hover {
+            background-color: #c2102e;
+        }
+        
+        .response-box {
+            background-color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .response-text {
+            line-height: 1.5;
+            font-size: 15px;
+            padding: 8px;
+        }
+        
+        .voice-controls {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .voice-btn {
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .voice-btn:hover {
+            background-color: var(--dark-gray);
+        }
+        
+        /* FAQ Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalOpen 0.3s ease;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: var(--soran-red);
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .faq-item {
+            background-color: #f8f9fa;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 4px solid var(--soran-blue);
+        }
+        
+        .faq-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(3px);
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+        }
+        
+        .admin-btn {
+            background-color: var(--dark-gray);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 13px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .admin-login {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+        
+        .admin-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            animation: modalOpen 0.3s ease;
+        }
+        
+        .admin-dashboard {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+            overflow-y: auto;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes modalOpen {
+            from { 
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* PWA Install Prompt */
+        .install-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 100;
+        }
+        
+        @media (max-width: 600px) {
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .main-btn {
+                padding: 12px 20px;
+                font-size: 15px;
+            }
+            
+            .response-text {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://cdn.solo.to/user/a/668d94bac1a774_92482248.jpg" alt="Soran University Logo" class="logo">
+        <h1>Soran University Portal</h1>
+        <p>Learning Management and Student Information System</p>
+    </header>
+    
+    <main>
+        <div class="buttons-container">
+            <a href="https://lms.soran.edu.iq/" class="main-btn">Learning Management System (LMS)</a>
+            <a href="https://sis.soran.edu.iq/home.php" class="main-btn">Student Information System (SIS)</a>
+            <button class="main-btn faq-btn" id="faqBtn">Frequently Asked Questions</button>
+        </div>
+        
+        <div class="response-box" id="responseBox">
+            <div class="response-text" id="responseText"></div>
+            <div class="voice-controls">
+                <button class="voice-btn" id="stopBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
+                        <path d="M6 6h12v12H6z" fill="white"/>
+                    </svg>
+                    Stop Voice
+                </button>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Admin Panel Button -->
+    <div class="admin-panel">
+        <button class="admin-btn" id="adminBtn">Admin</button>
+    </div>
+    
+    <!-- FAQ Modal -->
+    <div class="modal" id="faqModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeFaq">×</button>
+            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Frequently Asked Questions</h2>
+            <div id="faqList"></div>
+        </div>
+    </div>
+    
+    <!-- Admin Login Modal -->
+    <div class="admin-login" id="adminLogin">
+        <div class="admin-form">
+            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Admin Login</h2>
+            <input type="email" id="adminEmail" placeholder="Admin Email" required style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 6px;">
+            <input type="password" id="adminPassword" placeholder="Password" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px;">
+            <button id="loginBtn" style="width: 100%; padding: 10px; background-color: var(--soran-blue); color: white; border: none; border-radius: 6px; cursor: pointer;">Login</button>
+        </div>
+    </div>
+    
+    <!-- Admin Dashboard -->
+    <div class="admin-dashboard" id="adminDashboard">
+        <button class="close-btn" id="logoutBtn" style="align-self: flex-end; margin-bottom: 15px;">×</button>
+        <h2 style="text-align: center; margin-bottom: 20px; color: var(--soran-blue);">Admin Dashboard</h2>
+        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <h3 style="margin-bottom: 10px;">System Statistics</h3>
+            <p>Total Users: <span id="totalUsers">0</span></p>
+            <p>Active Sessions: <span id="activeSessions">0</span></p>
+        </div>
+        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px;">
+            <h3 style="margin-bottom: 10px;">Quick Actions</h3>
+            <button class="main-btn" style="margin-bottom: 8px; width: 100%;">Manage Users</button>
+            <button class="main-btn" style="margin-bottom: 8px; width: 100%;">View Logs</button>
+            <button class="main-btn" style="width: 100%;">System Settings</button>
+        </div>
+    </div>
+    
+    <!-- PWA Install Button -->
+    <button class="install-btn" id="installBtn">Install App</button>
+
+    <script>
+        // Speech system
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let deferredPrompt;
+        
+        // FAQ data with updated contact info and name
+        const faqData = [
+            {
+                question: "Who created this system?",
+                answer: "This system was developed by the Dean of the Faculty of Education and Mr. Mustafa Kaify"
+            },
+            {
+                question: "How can I access the LMS?",
+                answer: "You can click on the Learning Management System button or visit lms.soran.edu.iq"
+            },
+            {
+                question: "What is the Learning Management System?",
+                answer: "The LMS is an electronic platform for viewing course materials, checking grades, submitting assignments, and communicating with instructors"
+            },
+            {
+                question: "Can I access the systems from mobile?",
+                answer: "Yes, both systems are mobile-friendly and can be accessed from any smartphone or tablet"
+            },
+            {
+                question: "Who can use these systems?",
+                answer: "All registered students and faculty members of Soran University can access the systems"
+            },
+            {
+                question: "How can I get technical support?",
+                answer: "For technical support, please contact: Email - support@soran.edu.iq, Phone - +964 0751 104 8415, Office hours - Sunday through Thursday, 8:00 AM to 3:00 PM"
+            }
+        ];
+        
+        // DOM Elements
+        const elements = {
+            faqBtn: document.getElementById('faqBtn'),
+            faqModal: document.getElementById('faqModal'),
+            closeFaq: document.getElementById('closeFaq'),
+            faqList: document.getElementById('faqList'),
+            responseBox: document.getElementById('responseBox'),
+            responseText: document.getElementById('responseText'),
+            stopBtn: document.getElementById('stopBtn'),
+            adminBtn: document.getElementById('adminBtn'),
+            adminLogin: document.getElementById('adminLogin'),
+            adminDashboard: document.getElementById('adminDashboard'),
+            loginBtn: document.getElementById('loginBtn'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            totalUsers: document.getElementById('totalUsers'),
+            activeSessions: document.getElementById('activeSessions'),
+            installBtn: document.getElementById('installBtn')
+        };
+        
+        // Show FAQ questions
+        function showFAQ() {
+            elements.faqList.innerHTML = '';
+            faqData.forEach(item => {
+                const questionEl = document.createElement('div');
+                questionEl.className = 'faq-item';
+                questionEl.textContent = item.question;
+                questionEl.addEventListener('click', () => {
+                    displayAnswer(item.answer);
+                    speakAnswer(item.answer);
+                });
+                elements.faqList.appendChild(questionEl);
+            });
+            elements.faqModal.style.display = 'flex';
+        }
+        
+        // Display answer
+        function displayAnswer(answer) {
+            elements.responseText.textContent = answer;
+            elements.responseBox.style.display = 'block';
+            elements.faqModal.style.display = 'none';
+        }
+        
+        // Speak answer
+        function speakAnswer(text) {
+            if (!text || text.trim() === '') return;
+            
+            if (synth.speaking) {
+                synth.cancel();
+            }
+            
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'en-US';
+            currentUtterance.rate = 1.0;
+            
+            // Find best English voice
+            const voices = synth.getVoices();
+            const englishVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en-GB'));
+            if (englishVoice) currentUtterance.voice = englishVoice;
+            
+            synth.speak(currentUtterance);
+        }
+        
+        // Admin functionality
+        const adminCredentials = {
+            email: "admin@soran.edu.iq",
+            password: "SoranAdmin123"
+        };
+        
+        let users = JSON.parse(localStorage.getItem('soran_users')) || [];
+        let sessions = JSON.parse(localStorage.getItem('soran_sessions')) || [];
+        
+        // Track current user
+        const userId = localStorage.getItem('soran_userId');
+        if (!userId) {
+            const newUserId = 'user_' + Date.now();
+            localStorage.setItem('soran_userId', newUserId);
+            users.push({
+                id: newUserId,
+                firstVisit: new Date().toISOString(),
+                lastVisit: new Date().toISOString()
+            });
+        } else {
+            const userIndex = users.findIndex(u => u.id === userId);
+            if (userIndex !== -1) {
+                users[userIndex].lastVisit = new Date().toISOString();
+            } else {
+                users.push({
+                    id: userId,
+                    firstVisit: new Date().toISOString(),
+                    lastVisit: new Date().toISOString()
+                });
+            }
+        }
+        
+        // Track session
+        const sessionId = 'session_' + Date.now();
+        sessions.push({
+            id: sessionId,
+            userId: userId,
+            startTime: new Date().toISOString(),
+            userAgent: navigator.userAgent
+        });
+        
+        // Save data
+        localStorage.setItem('soran_users', JSON.stringify(users));
+        localStorage.setItem('soran_sessions', JSON.stringify(sessions));
+        
+        // PWA Installation
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            elements.installBtn.style.display = 'block';
+        });
+        
+        elements.installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    elements.installBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+        
+        // Check if running as PWA
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            elements.installBtn.style.display = 'none';
+        }
+        
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Inline service worker code
+                const swCode = `
+                    const CACHE_NAME = 'soran-portal-v1';
+                    const urlsToCache = [
+                        '/',
+                        '/index.html',
+                        'https://cdn.solo.to/user/a/668d94bac1a774_92482248.jpg',
+                        'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap'
+                    ];
+
+                    self.addEventListener('install', event => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then(cache => cache.addAll(urlsToCache))
+                        );
+                    });
+
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then(response => response || fetch(event.request))
+                        );
+                    });
+                `;
+                
+                const blob = new Blob([swCode], {type: 'application/javascript'});
+                const swUrl = URL.createObjectURL(blob);
+                
+                navigator.serviceWorker.register(swUrl).then(registration => {
+                    console.log('ServiceWorker registration successful');
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+        
+        // Event listeners
+        elements.faqBtn.addEventListener('click', showFAQ);
+        elements.closeFaq.addEventListener('click', () => {
+            elements.faqModal.style.display = 'none';
+        });
+        elements.stopBtn.addEventListener('click', () => {
+            synth.cancel();
+        });
+        elements.adminBtn.addEventListener('click', () => {
+            elements.adminLogin.style.display = 'flex';
+        });
+        elements.loginBtn.addEventListener('click', () => {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (email === adminCredentials.email && password === adminCredentials.password) {
+                elements.adminLogin.style.display = 'none';
+                elements.adminDashboard.style.display = 'flex';
+                elements.totalUsers.textContent = users.length;
+                elements.activeSessions.textContent = sessions.filter(s => 
+                    new Date() - new Date(s.startTime) < 30*60*1000
+                ).length;
+                document.getElementById('adminEmail').value = '';
+                document.getElementById('adminPassword').value = '';
+            } else {
+                alert('Invalid credentials');
+            }
+        });
+        elements.logoutBtn.addEventListener('click', () => {
+            elements.adminDashboard.style.display = 'none';
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === elements.faqModal) {
+                elements.faqModal.style.display = 'none';
+            }
+            if (e.target === elements.adminLogin) {
+                elements.adminLogin.style.display = 'none';
+            }
+        });
+        
+        // Initialize voices
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => {};
+        }
+        
+        // On page load
+        window.addEventListener('load', () => {
+            synth.getVoices(); // Preload voices
+            
+            // Check for updates every 12 hours
+            if ('serviceWorker' in navigator) {
+                setInterval(() => {
+                    navigator.serviceWorker.getRegistration().then(reg => {
+                        if (reg) reg.update();
+                    });
+                }, 12 * 60 * 60 * 1000);
+            }
+        });
+    </script>
+</body>
+</html>
