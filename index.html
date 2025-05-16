@@ -200,6 +200,9 @@
             position: fixed;
             top: 15px;
             right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         
         .admin-btn {
@@ -211,6 +214,18 @@
             cursor: pointer;
             font-size: 13px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .add-to-home-btn {
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 13px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            display: none; /* Hidden by default */
         }
         
         .admin-login {
@@ -247,6 +262,27 @@
             flex-direction: column;
             z-index: 1001;
             overflow-y: auto;
+        }
+        
+        /* AI Assistant Button */
+        .ai-assistant-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            z-index: 100;
         }
         
         /* Animations */
@@ -300,6 +336,12 @@
             .response-text {
                 font-size: 14px;
             }
+            
+            .ai-assistant-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -333,7 +375,11 @@
     <!-- Admin Panel Button -->
     <div class="admin-panel">
         <button class="admin-btn" id="adminBtn">Admin</button>
+        <button class="add-to-home-btn" id="addToHomeBtn">Add to Home Screen</button>
     </div>
+    
+    <!-- AI Assistant Button -->
+    <button class="ai-assistant-btn" id="aiBtn">AI</button>
     
     <!-- FAQ Modal -->
     <div class="modal" id="faqModal">
@@ -347,7 +393,7 @@
     <!-- Admin Login Modal -->
     <div class="admin-login" id="adminLogin">
         <div class="admin-form">
-            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Admin Login</h2>
+            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">تەنها بەڕێوەبەر دەتوانێت ئەم بەشە بکاتەوە</h2>
             <input type="email" id="adminEmail" placeholder="Admin Email" required style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 6px;">
             <input type="password" id="adminPassword" placeholder="Password" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px;">
             <button id="loginBtn" style="width: 100%; padding: 10px; background-color: var(--soran-blue); color: white; border: none; border-radius: 6px; cursor: pointer;">Login</button>
@@ -384,7 +430,7 @@
         const faqData = [
             {
                 question: "Who created this system?",
-                answer: "This system was developed by the Dean of the Faculty of Education and Mr. Mustafa Kaify"
+                answer: "This system was developed by Mr. Mustafa Kaify, a student at Soran University and Faculty of Education"
             },
             {
                 question: "How can I access the LMS?",
@@ -424,7 +470,9 @@
             logoutBtn: document.getElementById('logoutBtn'),
             totalUsers: document.getElementById('totalUsers'),
             activeSessions: document.getElementById('activeSessions'),
-            installBtn: document.getElementById('installBtn')
+            installBtn: document.getElementById('installBtn'),
+            aiBtn: document.getElementById('aiBtn'),
+            addToHomeBtn: document.getElementById('addToHomeBtn')
         };
         
         // Show FAQ questions
@@ -450,7 +498,7 @@
             elements.faqModal.style.display = 'none';
         }
         
-        // Speak answer
+        // Speak answer with female voice
         function speakAnswer(text) {
             if (!text || text.trim() === '') return;
             
@@ -462,13 +510,30 @@
             currentUtterance.lang = 'en-US';
             currentUtterance.rate = 1.0;
             
-            // Find best English voice
+            // Find best female English voice
             const voices = synth.getVoices();
-            const englishVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en-GB'));
-            if (englishVoice) currentUtterance.voice = englishVoice;
+            const femaleVoice = voices.find(v => 
+                (v.lang.includes('en-US') || v.lang.includes('en-GB')) && 
+                v.name.toLowerCase().includes('female')
+            );
+            
+            if (femaleVoice) {
+                currentUtterance.voice = femaleVoice;
+            } else {
+                // Fallback to any English voice if no female voice found
+                const englishVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en-GB'));
+                if (englishVoice) currentUtterance.voice = englishVoice;
+            }
             
             synth.speak(currentUtterance);
         }
+        
+        // AI Assistant functionality
+        elements.aiBtn.addEventListener('click', () => {
+            const aiResponse = "Hello! I'm your AI assistant for Soran University. How can I help you today?";
+            displayAnswer(aiResponse);
+            speakAnswer(aiResponse);
+        });
         
         // Admin functionality
         const adminCredentials = {
@@ -520,6 +585,7 @@
             e.preventDefault();
             deferredPrompt = e;
             elements.installBtn.style.display = 'block';
+            elements.addToHomeBtn.style.display = 'block';
         });
         
         elements.installBtn.addEventListener('click', async () => {
@@ -528,6 +594,19 @@
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
                     elements.installBtn.style.display = 'none';
+                    elements.addToHomeBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+        
+        elements.addToHomeBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    elements.installBtn.style.display = 'none';
+                    elements.addToHomeBtn.style.display = 'none';
                 }
                 deferredPrompt = null;
             }
@@ -536,6 +615,7 @@
         // Check if running as PWA
         if (window.matchMedia('(display-mode: standalone)').matches) {
             elements.installBtn.style.display = 'none';
+            elements.addToHomeBtn.style.display = 'none';
         }
         
         // Service Worker Registration
@@ -636,6 +716,9 @@
                     });
                 }, 12 * 60 * 60 * 1000);
             }
+            
+            // Hide add to home button initially
+            elements.addToHomeBtn.style.display = 'none';
         });
     </script>
 </body>
