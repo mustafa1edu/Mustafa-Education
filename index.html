@@ -248,6 +248,7 @@
             width: 90%;
             max-width: 400px;
             animation: modalOpen 0.3s ease;
+            position: relative;
         }
         
         .admin-dashboard {
@@ -264,129 +265,82 @@
             overflow-y: auto;
         }
         
-        /* AI Page Styles */
-        .ai-page {
+        /* AI Assistant Panel */
+        .ai-panel {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: white;
-            padding: 20px;
             display: none;
             flex-direction: column;
-            z-index: 1001;
-            overflow-y: auto;
+            z-index: 1002;
         }
-
+        
         .ai-header {
+            background-color: var(--soran-blue);
+            color: white;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
         }
-
-        .ai-title {
-            color: var(--soran-blue);
-            font-size: 24px;
-        }
-
-        .ai-close-btn {
-            background-color: var(--soran-red);
-            color: white;
+        
+        .ai-iframe {
+            flex: 1;
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100%;
         }
-
-        .ai-chat-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            background-color: #f9f9f9;
-        }
-
-        .ai-messages {
-            flex: 1;
-            overflow-y: auto;
-            margin-bottom: 15px;
-            padding: 10px;
-        }
-
-        .message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 8px;
-            max-width: 80%;
-        }
-
-        .user-message {
-            background-color: var(--soran-blue);
-            color: white;
-            align-self: flex-end;
-        }
-
-        .ai-message {
-            background-color: #e9ecef;
-            color: var(--dark-gray);
-            align-self: flex-start;
-        }
-
-        .ai-input-container {
-            display: flex;
-            gap: 10px;
-        }
-
-        .ai-input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            font-size: 16px;
-        }
-
-        .ai-send-btn {
-            background-color: var(--soran-blue);
-            color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .language-selector {
-            margin-bottom: 15px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .language-btn {
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: 1px solid var(--soran-blue);
+        
+        /* Registration Form */
+        .register-form {
             background-color: white;
-            color: var(--soran-blue);
-            cursor: pointer;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            animation: modalOpen 0.3s ease;
+            position: relative;
         }
-
-        .language-btn.active {
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        /* PWA Install Prompt */
+        .install-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
             background-color: var(--soran-blue);
             color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 100;
         }
         
         /* AI Assistant Button */
@@ -408,22 +362,7 @@
             font-weight: bold;
             font-size: 18px;
             z-index: 100;
-        }
-        
-        /* PWA Install Prompt */
-        .install-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--soran-blue);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            display: none;
-            z-index: 100;
+            text-decoration: none;
         }
         
         /* Animations */
@@ -506,6 +445,15 @@
     <!-- AI Assistant Button -->
     <button class="ai-assistant-btn" id="aiBtn">AI</button>
     
+    <!-- AI Panel -->
+    <div class="ai-panel" id="aiPanel">
+        <div class="ai-header">
+            <h2>Soran University AI Assistant</h2>
+            <button class="close-btn" id="closeAi">×</button>
+        </div>
+        <iframe src="https://mustafa-ai.vercel.app/" class="ai-iframe" id="aiFrame"></iframe>
+    </div>
+    
     <!-- FAQ Modal -->
     <div class="modal" id="faqModal">
         <div class="modal-content">
@@ -518,10 +466,55 @@
     <!-- Admin Login Modal -->
     <div class="admin-login" id="adminLogin">
         <div class="admin-form">
-            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">تەنها بەڕێوەبەر دەتوانێت ئەم بەشە بکاتەوە</h2>
-            <input type="email" id="adminEmail" placeholder="Admin Email" required style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 6px;">
-            <input type="password" id="adminPassword" placeholder="Password" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px;">
-            <button id="loginBtn" style="width: 100%; padding: 10px; background-color: var(--soran-blue); color: white; border: none; border-radius: 6px; cursor: pointer;">Login</button>
+            <button class="close-btn" id="closeAdminLogin" style="position: absolute; top: 8px; right: 8px;">×</button>
+            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Admin Login</h2>
+            <div class="form-group">
+                <label for="adminEmail">Email</label>
+                <input type="email" id="adminEmail" placeholder="admin@soran.edu.iq" required>
+            </div>
+            <div class="form-group">
+                <label for="adminPassword">Password</label>
+                <input type="password" id="adminPassword" placeholder="Enter password" required>
+            </div>
+            <div class="form-actions">
+                <button id="loginBtn" class="main-btn" style="width: 48%;">Login</button>
+                <button id="registerBtn" class="main-btn" style="width: 48%; background-color: var(--soran-red);">Register</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Admin Registration Modal -->
+    <div class="admin-login" id="adminRegister">
+        <div class="register-form">
+            <button class="close-btn" id="closeAdminRegister" style="position: absolute; top: 8px; right: 8px;">×</button>
+            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Admin Registration</h2>
+            <div class="form-group">
+                <label for="regName">Full Name</label>
+                <input type="text" id="regName" placeholder="Enter full name" required>
+            </div>
+            <div class="form-group">
+                <label for="regEmail">Email</label>
+                <input type="email" id="regEmail" placeholder="admin@soran.edu.iq" required>
+            </div>
+            <div class="form-group">
+                <label for="regPassword">Password</label>
+                <input type="password" id="regPassword" placeholder="Create password" required>
+            </div>
+            <div class="form-group">
+                <label for="regConfirmPassword">Confirm Password</label>
+                <input type="password" id="regConfirmPassword" placeholder="Confirm password" required>
+            </div>
+            <div class="form-group">
+                <label for="regDepartment">Department</label>
+                <select id="regDepartment" required>
+                    <option value="">Select department</option>
+                    <option value="IT">Information Technology</option>
+                    <option value="Admin">Administration</option>
+                    <option value="Academic">Academic Affairs</option>
+                    <option value="Finance">Finance</option>
+                </select>
+            </div>
+            <button id="submitRegisterBtn" class="main-btn" style="width: 100%; margin-top: 15px;">Register</button>
         </div>
     </div>
     
@@ -533,40 +526,13 @@
             <h3 style="margin-bottom: 10px;">System Statistics</h3>
             <p>Total Users: <span id="totalUsers">0</span></p>
             <p>Active Sessions: <span id="activeSessions">0</span></p>
+            <p>Registered Admins: <span id="totalAdmins">0</span></p>
         </div>
         <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px;">
             <h3 style="margin-bottom: 10px;">Quick Actions</h3>
             <button class="main-btn" style="margin-bottom: 8px; width: 100%;">Manage Users</button>
             <button class="main-btn" style="margin-bottom: 8px; width: 100%;">View Logs</button>
             <button class="main-btn" style="width: 100%;">System Settings</button>
-        </div>
-    </div>
-    
-    <!-- AI Page -->
-    <div class="ai-page" id="aiPage">
-        <div class="ai-header">
-            <h2 class="ai-title">Soran University AI Assistant</h2>
-            <button class="ai-close-btn" id="aiCloseBtn">×</button>
-        </div>
-
-        <div class="language-selector">
-            <button class="language-btn active" data-lang="ku">Kurdî</button>
-            <button class="language-btn" data-lang="en">English</button>
-        </div>
-
-        <div class="ai-chat-container">
-            <div class="ai-messages" id="aiMessages">
-                <!-- Messages will appear here -->
-            </div>
-            <div class="ai-input-container">
-                <input type="text" class="ai-input" id="aiInput" placeholder="Pirsekî bipirsin...">
-                <button class="ai-send-btn" id="aiSendBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                </button>
-            </div>
         </div>
     </div>
     
@@ -623,217 +589,19 @@
             logoutBtn: document.getElementById('logoutBtn'),
             totalUsers: document.getElementById('totalUsers'),
             activeSessions: document.getElementById('activeSessions'),
+            totalAdmins: document.getElementById('totalAdmins'),
             installBtn: document.getElementById('installBtn'),
-            aiBtn: document.getElementById('aiBtn'),
             addToHomeBtn: document.getElementById('addToHomeBtn'),
-            aiPage: document.getElementById('aiPage'),
-            aiCloseBtn: document.getElementById('aiCloseBtn'),
-            aiMessages: document.getElementById('aiMessages'),
-            aiInput: document.getElementById('aiInput'),
-            aiSendBtn: document.getElementById('aiSendBtn')
+            aiBtn: document.getElementById('aiBtn'),
+            aiPanel: document.getElementById('aiPanel'),
+            closeAi: document.getElementById('closeAi'),
+            aiFrame: document.getElementById('aiFrame'),
+            registerBtn: document.getElementById('registerBtn'),
+            adminRegister: document.getElementById('adminRegister'),
+            closeAdminLogin: document.getElementById('closeAdminLogin'),
+            closeAdminRegister: document.getElementById('closeAdminRegister'),
+            submitRegisterBtn: document.getElementById('submitRegisterBtn')
         };
-        
-        // Language elements
-        const languageBtns = document.querySelectorAll('.language-btn');
-        let currentLanguage = 'ku'; // Default to Kurdish
-
-        // Gemini AI API Configuration
-        const API_KEY = "AIzaSyAidobNasikvYBQ7MvNSt3w0b9exHNfuIc";
-        const MODEL_NAME = "gemini-1.5-pro-latest";
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
-
-        // Show FAQ questions
-        function showFAQ() {
-            elements.faqList.innerHTML = '';
-            faqData.forEach(item => {
-                const questionEl = document.createElement('div');
-                questionEl.className = 'faq-item';
-                questionEl.textContent = item.question;
-                questionEl.addEventListener('click', () => {
-                    displayAnswer(item.answer);
-                    speakAnswer(item.answer);
-                });
-                elements.faqList.appendChild(questionEl);
-            });
-            elements.faqModal.style.display = 'flex';
-        }
-        
-        // Display answer
-        function displayAnswer(answer) {
-            elements.responseText.textContent = answer;
-            elements.responseBox.style.display = 'block';
-            elements.faqModal.style.display = 'none';
-        }
-        
-        // Speak answer with female voice
-        function speakAnswer(text) {
-            if (!text || text.trim() === '') return;
-            
-            if (synth.speaking) {
-                synth.cancel();
-            }
-            
-            currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.lang = 'en-US';
-            currentUtterance.rate = 1.0;
-            
-            // Find best female English voice
-            const voices = synth.getVoices();
-            const femaleVoice = voices.find(v => 
-                (v.lang.includes('en-US') || v.lang.includes('en-GB')) && 
-                v.name.toLowerCase().includes('female')
-            );
-            
-            if (femaleVoice) {
-                currentUtterance.voice = femaleVoice;
-            } else {
-                // Fallback to any English voice if no female voice found
-                const englishVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en-GB'));
-                if (englishVoice) currentUtterance.voice = englishVoice;
-            }
-            
-            synth.speak(currentUtterance);
-        }
-        
-        // Update the text elements based on language
-        function updateLanguage() {
-            if (currentLanguage === 'ku') {
-                elements.aiInput.placeholder = "Pirsekî bipirsin...";
-            } else {
-                elements.aiInput.placeholder = "Ask a question...";
-            }
-        }
-
-        // Language selector
-        languageBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                languageBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentLanguage = btn.dataset.lang;
-                updateLanguage();
-            });
-        });
-
-        // Show AI page when AI button is clicked
-        elements.aiBtn.addEventListener('click', () => {
-            elements.aiPage.style.display = 'flex';
-            // Add welcome message in Kurdish
-            addMessage("AI", "Silav! Ez alîkara AI ya Zanîngeha Soranê me. Çawa dikarim alîkariya te bikim?", 'ku');
-        });
-
-        // Close AI page
-        elements.aiCloseBtn.addEventListener('click', () => {
-            elements.aiPage.style.display = 'none';
-        });
-
-        // Add message to chat
-        function addMessage(sender, text, lang) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
-            
-            if (sender === 'user') {
-                messageDiv.classList.add('user-message');
-                messageDiv.textContent = text;
-            } else {
-                messageDiv.classList.add('ai-message');
-                messageDiv.innerHTML = text.replace(/\n/g, '<br>');
-            }
-            
-            elements.aiMessages.appendChild(messageDiv);
-            elements.aiMessages.scrollTop = elements.aiMessages.scrollHeight;
-        }
-
-        // Send message to Gemini AI
-        async function fetchAIResponse(message, lang) {
-            try {
-                const systemPrompt = lang === 'ku' ? 
-                    "Tu alîkarek AI yê Zanîngeha Soranê yî. Bi kurdî bersivê bide." : 
-                    "You are an AI assistant for Soran University. Respond in English.";
-                
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: `${systemPrompt}\n\nUser: ${message}`
-                            }]
-                        }]
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API request failed with status ${response.status}`);
-                }
-
-                const data = await response.json();
-                const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 
-                    (lang === 'ku' ? 
-                        "Bibore, bersivek nayê. Ji kerema xwe dîsa biceribîne." : 
-                        "Sorry, I couldn't generate a response. Please try again.");
-
-                return aiResponse;
-            } catch (error) {
-                console.error("Error calling Gemini API:", error);
-                return lang === 'ku' ? 
-                    "Bibore, çewtiyek çêbû. Ji kerema xwe dîsa biceribîne." : 
-                    "Sorry, an error occurred. Please try again.";
-            }
-        }
-
-        // Send message to AI
-        async function sendToAI(message) {
-            addMessage('user', message, currentLanguage);
-            elements.aiInput.value = '';
-            
-            // Show typing indicator
-            const typingIndicator = document.createElement('div');
-            typingIndicator.classList.add('message', 'ai-message');
-            typingIndicator.textContent = currentLanguage === 'ku' ? 'Di nivîse...' : 'Typing...';
-            elements.aiMessages.appendChild(typingIndicator);
-            elements.aiMessages.scrollTop = elements.aiMessages.scrollHeight;
-
-            try {
-                const response = await fetchAIResponse(message, currentLanguage);
-                
-                // Remove typing indicator
-                elements.aiMessages.removeChild(typingIndicator);
-                
-                // Add AI response
-                addMessage('AI', response, currentLanguage);
-                
-                // Speak the response if it's not an error message
-                if (!response.includes("Bibore") && !response.includes("Sorry")) {
-                    speakAnswer(response);
-                }
-            } catch (error) {
-                console.error('Error in AI conversation:', error);
-                elements.aiMessages.removeChild(typingIndicator);
-                addMessage('AI', currentLanguage === 'ku' 
-                    ? 'Bibore, çewtiyek çêbû. Ji kerema xwe dîsa biceribîne.' 
-                    : 'Sorry, an error occurred. Please try again.', currentLanguage);
-            }
-        }
-
-        // Handle send button click
-        elements.aiSendBtn.addEventListener('click', () => {
-            const message = elements.aiInput.value.trim();
-            if (message) {
-                sendToAI(message);
-            }
-        });
-
-        // Handle Enter key
-        elements.aiInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const message = elements.aiInput.value.trim();
-                if (message) {
-                    sendToAI(message);
-                }
-            }
-        });
         
         // Admin functionality
         const adminCredentials = {
@@ -843,6 +611,7 @@
         
         let users = JSON.parse(localStorage.getItem('soran_users')) || [];
         let sessions = JSON.parse(localStorage.getItem('soran_sessions')) || [];
+        let admins = JSON.parse(localStorage.getItem('soran_admins')) || [];
         
         // Track current user
         const userId = localStorage.getItem('soran_userId');
@@ -923,12 +692,13 @@
             window.addEventListener('load', () => {
                 // Inline service worker code
                 const swCode = `
-                    const CACHE_NAME = 'soran-portal-v1';
+                    const CACHE_NAME = 'soran-portal-v2';
                     const urlsToCache = [
                         '/',
                         '/index.html',
                         'https://cdn.solo.to/user/a/668d94bac1a774_92482248.jpg',
-                        'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap'
+                        'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap',
+                        'https://mustafa-ai.vercel.app/'
                     ];
 
                     self.addEventListener('install', event => {
@@ -944,6 +714,12 @@
                                 .then(response => response || fetch(event.request))
                         );
                     });
+                    
+                    self.addEventListener('message', event => {
+                        if (event.data === 'skipWaiting') {
+                            self.skipWaiting();
+                        }
+                    });
                 `;
                 
                 const blob = new Blob([swCode], {type: 'application/javascript'});
@@ -951,10 +727,77 @@
                 
                 navigator.serviceWorker.register(swUrl).then(registration => {
                     console.log('ServiceWorker registration successful');
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New update available
+                                if (confirm('A new version is available. Reload to update?')) {
+                                    newWorker.postMessage('skipWaiting');
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
                 }).catch(err => {
                     console.log('ServiceWorker registration failed: ', err);
                 });
             });
+        }
+        
+        // Show FAQ questions
+        function showFAQ() {
+            elements.faqList.innerHTML = '';
+            faqData.forEach(item => {
+                const questionEl = document.createElement('div');
+                questionEl.className = 'faq-item';
+                questionEl.textContent = item.question;
+                questionEl.addEventListener('click', () => {
+                    displayAnswer(item.answer);
+                    speakAnswer(item.answer);
+                });
+                elements.faqList.appendChild(questionEl);
+            });
+            elements.faqModal.style.display = 'flex';
+        }
+        
+        // Display answer
+        function displayAnswer(answer) {
+            elements.responseText.textContent = answer;
+            elements.responseBox.style.display = 'block';
+            elements.faqModal.style.display = 'none';
+        }
+        
+        // Speak answer with female voice
+        function speakAnswer(text) {
+            if (!text || text.trim() === '') return;
+            
+            if (synth.speaking) {
+                synth.cancel();
+            }
+            
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'en-US';
+            currentUtterance.rate = 1.0;
+            
+            // Find best female English voice
+            const voices = synth.getVoices();
+            const femaleVoice = voices.find(v => 
+                (v.lang.includes('en-US') || v.lang.includes('en-GB')) && 
+                v.name.toLowerCase().includes('female')
+            );
+            
+            if (femaleVoice) {
+                currentUtterance.voice = femaleVoice;
+            } else {
+                // Fallback to any English voice if no female voice found
+                const englishVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en-GB'));
+                if (englishVoice) currentUtterance.voice = englishVoice;
+            }
+            
+            synth.speak(currentUtterance);
         }
         
         // Event listeners
@@ -979,6 +822,7 @@
                 elements.activeSessions.textContent = sessions.filter(s => 
                     new Date() - new Date(s.startTime) < 30*60*1000
                 ).length;
+                elements.totalAdmins.textContent = admins.length;
                 document.getElementById('adminEmail').value = '';
                 document.getElementById('adminPassword').value = '';
             } else {
@@ -987,6 +831,69 @@
         });
         elements.logoutBtn.addEventListener('click', () => {
             elements.adminDashboard.style.display = 'none';
+        });
+        elements.aiBtn.addEventListener('click', () => {
+            elements.aiPanel.style.display = 'flex';
+            elements.aiFrame.src = 'https://mustafa-ai.vercel.app/';
+        });
+        elements.closeAi.addEventListener('click', () => {
+            elements.aiPanel.style.display = 'none';
+        });
+        elements.registerBtn.addEventListener('click', () => {
+            elements.adminLogin.style.display = 'none';
+            elements.adminRegister.style.display = 'flex';
+        });
+        elements.closeAdminLogin.addEventListener('click', () => {
+            elements.adminLogin.style.display = 'none';
+        });
+        elements.closeAdminRegister.addEventListener('click', () => {
+            elements.adminRegister.style.display = 'none';
+        });
+        elements.submitRegisterBtn.addEventListener('click', () => {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const department = document.getElementById('regDepartment').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (!name || !email || !password || !department) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            // Check if admin already exists
+            if (admins.some(a => a.email === email)) {
+                alert('Admin with this email already exists');
+                return;
+            }
+            
+            // Add new admin
+            admins.push({
+                id: 'admin_' + Date.now(),
+                name,
+                email,
+                password,
+                department,
+                registeredAt: new Date().toISOString()
+            });
+            
+            localStorage.setItem('soran_admins', JSON.stringify(admins));
+            
+            alert('Registration successful! Please login with your new credentials.');
+            elements.adminRegister.style.display = 'none';
+            elements.adminLogin.style.display = 'flex';
+            
+            // Clear form
+            document.getElementById('regName').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+            document.getElementById('regConfirmPassword').value = '';
+            document.getElementById('regDepartment').value = '';
         });
         
         // Close modals when clicking outside
@@ -997,8 +904,11 @@
             if (e.target === elements.adminLogin) {
                 elements.adminLogin.style.display = 'none';
             }
-            if (e.target === elements.aiPage) {
-                elements.aiPage.style.display = 'none';
+            if (e.target === elements.adminRegister) {
+                elements.adminRegister.style.display = 'none';
+            }
+            if (e.target === elements.aiPanel) {
+                elements.aiPanel.style.display = 'none';
             }
         });
         
@@ -1010,7 +920,6 @@
         // On page load
         window.addEventListener('load', () => {
             synth.getVoices(); // Preload voices
-            updateLanguage(); // Set initial language
             
             // Check for updates every 12 hours
             if ('serviceWorker' in navigator) {
@@ -1023,6 +932,18 @@
             
             // Hide add to home button initially
             elements.addToHomeBtn.style.display = 'none';
+            
+            // Prevent back button in admin panels
+            window.addEventListener('popstate', (e) => {
+                if (elements.adminLogin.style.display === 'flex' || 
+                    elements.adminRegister.style.display === 'flex' || 
+                    elements.adminDashboard.style.display === 'flex') {
+                    history.pushState(null, null, window.location.href);
+                }
+            });
+            
+            // Push initial state
+            history.pushState(null, null, window.location.href);
         });
     </script>
 </body>
