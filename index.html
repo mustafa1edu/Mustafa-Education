@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#005baa">
-    <meta name="description" content="Soran University Portal for LMS and SIS access">
+    <meta name="description" content="Mustafa.EDU Portal for LMS and SIS access">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Soran University Portal</title>
+    <title>Mustafa.EDU Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --soran-blue: #005baa;
@@ -110,6 +111,27 @@
             line-height: 1.5;
             font-size: 15px;
             padding: 8px;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        
+        .copy-btn {
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--dark-gray);
         }
         
         .voice-controls {
@@ -279,12 +301,30 @@
         }
         
         .ai-header {
-            background-color: var(--soran-blue);
-            color: white;
             padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .ai-header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .ai-back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--soran-blue);
+        }
+        
+        .ai-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--soran-blue);
         }
         
         .ai-iframe {
@@ -406,13 +446,26 @@
                 height: 50px;
                 font-size: 16px;
             }
+            
+            .ai-panel {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .ai-header {
+                padding: 12px 15px;
+            }
+            
+            .ai-title {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <img src="https://cdn.solo.to/user/a/668d94bac1a774_92482248.jpg" alt="Soran University Logo" class="logo">
-        <h1>Soran University Portal</h1>
+        <img src="https://cdn.solo.to/user/a/668d94bac1a774_92482248.jpg" alt="Mustafa.EDU Logo" class="logo">
+        <h1>Mustafa.EDU Portal</h1>
         <p>Learning Management and Student Information System</p>
     </header>
     
@@ -425,6 +478,10 @@
         
         <div class="response-box" id="responseBox">
             <div class="response-text" id="responseText"></div>
+            <button class="copy-btn" id="copyBtn">
+                <i class="fas fa-copy"></i>
+                Copy Text
+            </button>
             <div class="voice-controls">
                 <button class="voice-btn" id="stopBtn">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
@@ -448,8 +505,13 @@
     <!-- AI Panel -->
     <div class="ai-panel" id="aiPanel">
         <div class="ai-header">
-            <h2>Soran University AI Assistant</h2>
-            <button class="close-btn" id="closeAi">×</button>
+            <button class="ai-back-btn" id="backAi">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="ai-title">Mustafa.EDU AI Assistant</div>
+            <div class="ai-header-buttons">
+                <button class="close-btn" id="closeAi">×</button>
+            </div>
         </div>
         <iframe src="https://mustafa-ai.vercel.app/" class="ai-iframe" id="aiFrame"></iframe>
     </div>
@@ -581,6 +643,7 @@
             faqList: document.getElementById('faqList'),
             responseBox: document.getElementById('responseBox'),
             responseText: document.getElementById('responseText'),
+            copyBtn: document.getElementById('copyBtn'),
             stopBtn: document.getElementById('stopBtn'),
             adminBtn: document.getElementById('adminBtn'),
             adminLogin: document.getElementById('adminLogin'),
@@ -594,6 +657,7 @@
             addToHomeBtn: document.getElementById('addToHomeBtn'),
             aiBtn: document.getElementById('aiBtn'),
             aiPanel: document.getElementById('aiPanel'),
+            backAi: document.getElementById('backAi'),
             closeAi: document.getElementById('closeAi'),
             aiFrame: document.getElementById('aiFrame'),
             registerBtn: document.getElementById('registerBtn'),
@@ -649,6 +713,20 @@
         localStorage.setItem('soran_users', JSON.stringify(users));
         localStorage.setItem('soran_sessions', JSON.stringify(sessions));
         
+        // Copy text function
+        elements.copyBtn.addEventListener('click', () => {
+            const textToCopy = elements.responseText.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = elements.copyBtn.innerHTML;
+                elements.copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    elements.copyBtn.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        });
+        
         // PWA Installation
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -692,13 +770,14 @@
             window.addEventListener('load', () => {
                 // Inline service worker code
                 const swCode = `
-                    const CACHE_NAME = 'soran-portal-v2';
+                    const CACHE_NAME = 'mustafa-edu-v1';
                     const urlsToCache = [
                         '/',
                         '/index.html',
                         'https://cdn.solo.to/user/a/668d94bac1a774_92482248.jpg',
                         'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap',
-                        'https://mustafa-ai.vercel.app/'
+                        'https://mustafa-ai.vercel.app/',
+                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
                     ];
 
                     self.addEventListener('install', event => {
@@ -835,6 +914,9 @@
         elements.aiBtn.addEventListener('click', () => {
             elements.aiPanel.style.display = 'flex';
             elements.aiFrame.src = 'https://mustafa-ai.vercel.app/';
+        });
+        elements.backAi.addEventListener('click', () => {
+            elements.aiPanel.style.display = 'none';
         });
         elements.closeAi.addEventListener('click', () => {
             elements.aiPanel.style.display = 'none';
