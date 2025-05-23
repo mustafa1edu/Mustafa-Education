@@ -250,44 +250,36 @@
             display: none;
         }
         
-        .admin-login {
+        /* NEW AI ASSISTANT DESIGN */
+        .ai-assistant-btn {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.8);
-            display: none;
-            justify-content: center;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--soran-blue), #0077cc);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,91,170,0.3);
+            display: flex;
             align-items: center;
-            z-index: 1001;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 100;
+            transition: all 0.3s ease;
         }
         
-        .admin-form {
-            background-color: white;
-            padding: 20px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            animation: modalOpen 0.3s ease;
-            position: relative;
+        .ai-assistant-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,91,170,0.4);
         }
         
-        .admin-dashboard {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: white;
-            padding: 20px;
-            display: none;
-            flex-direction: column;
-            z-index: 1001;
-            overflow-y: auto;
+        .ai-assistant-btn.pulse {
+            animation: pulse 2s infinite;
         }
         
-        /* AI Assistant Panel */
         .ai-panel {
             position: fixed;
             top: 0;
@@ -298,121 +290,68 @@
             display: none;
             flex-direction: column;
             z-index: 1002;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
         }
         
         .ai-header {
-            padding: 15px;
+            padding: 18px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #eee;
-            background-color: white;
+            background-color: var(--soran-blue);
+            color: white;
             position: sticky;
             top: 0;
             z-index: 10;
         }
         
-        .ai-header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .ai-back-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--soran-blue);
-            padding: 5px;
-        }
-        
         .ai-title {
             font-size: 18px;
             font-weight: 500;
-            color: var(--soran-blue);
             flex-grow: 1;
             text-align: center;
-            padding: 0 10px;
+        }
+        
+        .ai-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
         }
         
         .ai-iframe {
             flex: 1;
             border: none;
             width: 100%;
-            height: 100%;
-            min-height: calc(100vh - 60px);
+            height: calc(100% - 60px);
         }
         
-        /* Registration Form */
-        .register-form {
+        .ai-footer {
+            padding: 12px 20px;
             background-color: white;
-            padding: 20px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            animation: modalOpen 0.3s ease;
-            position: relative;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-        
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-        }
-        
-        .form-actions {
+            border-top: 1px solid #eee;
             display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
+            justify-content: center;
+            gap: 15px;
         }
         
-        /* PWA Install Prompt */
-        .install-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--soran-blue);
-            color: white;
+        .ai-footer-btn {
+            background-color: var(--light-gray);
             border: none;
-            padding: 10px 15px;
+            padding: 8px 15px;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            display: none;
-            z-index: 100;
-        }
-        
-        /* AI Assistant Button */
-        .ai-assistant-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--soran-blue);
-            color: white;
-            border: none;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-            z-index: 100;
-            text-decoration: none;
+            gap: 5px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .ai-footer-btn:hover {
+            background-color: #e1e5eb;
         }
         
         /* Animations */
@@ -430,6 +369,12 @@
                 opacity: 1;
                 transform: scale(1);
             }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0,91,170,0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(0,91,170,0); }
+            100% { box-shadow: 0 0 0 0 rgba(0,91,170,0); }
         }
         
         @media (max-width: 600px) {
@@ -452,31 +397,24 @@
             }
             
             .ai-assistant-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 16px;
-            }
-            
-            .ai-panel {
-                display: flex;
-                flex-direction: column;
+                width: 60px;
+                height: 60px;
+                font-size: 22px;
+                bottom: 20px;
+                right: 20px;
             }
             
             .ai-header {
-                padding: 12px 15px;
+                padding: 15px;
             }
             
             .ai-title {
                 font-size: 16px;
             }
             
-            .voice-btn, .copy-btn {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-            
-            .ai-iframe {
-                height: calc(100vh - 56px);
+            .ai-footer-btn {
+                padding: 6px 12px;
+                font-size: 13px;
             }
         }
     </style>
@@ -518,21 +456,31 @@
         <button class="add-to-home-btn" id="addToHomeBtn">Add to Home Screen</button>
     </div>
     
-    <!-- AI Assistant Button -->
-    <button class="ai-assistant-btn" id="aiBtn">AI</button>
+    <!-- NEW AI Assistant Button -->
+    <button class="ai-assistant-btn pulse" id="aiBtn">
+        <i class="fas fa-robot"></i>
+    </button>
     
-    <!-- AI Panel -->
+    <!-- NEW AI Panel -->
     <div class="ai-panel" id="aiPanel">
         <div class="ai-header">
-            <button class="ai-back-btn" id="backAi">
+            <button class="ai-close-btn" id="backAi">
                 <i class="fas fa-arrow-left"></i>
             </button>
             <div class="ai-title">Mustafa.EDU AI Assistant</div>
-            <div class="ai-header-buttons">
-                <button class="close-btn" id="closeAi">×</button>
-            </div>
+            <button class="ai-close-btn" id="closeAi">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         <iframe src="https://mustafa-ai.vercel.app/" class="ai-iframe" id="aiFrame" title="AI Assistant"></iframe>
+        <div class="ai-footer">
+            <button class="ai-footer-btn">
+                <i class="fas fa-history"></i> History
+            </button>
+            <button class="ai-footer-btn">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </div>
     </div>
     
     <!-- FAQ Modal -->
@@ -544,82 +492,6 @@
         </div>
     </div>
     
-    <!-- Admin Login Modal -->
-    <div class="admin-login" id="adminLogin">
-        <div class="admin-form">
-            <button class="close-btn" id="closeAdminLogin" style="position: absolute; top: 8px; right: 8px;">×</button>
-            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Admin Login</h2>
-            <div class="form-group">
-                <label for="adminEmail">Email</label>
-                <input type="email" id="adminEmail" placeholder="admin@soran.edu.iq" required>
-            </div>
-            <div class="form-group">
-                <label for="adminPassword">Password</label>
-                <input type="password" id="adminPassword" placeholder="Enter password" required>
-            </div>
-            <div class="form-actions">
-                <button id="loginBtn" class="main-btn" style="width: 48%;">Login</button>
-                <button id="registerBtn" class="main-btn" style="width: 48%; background-color: var(--soran-red);">Register</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Admin Registration Modal -->
-    <div class="admin-login" id="adminRegister">
-        <div class="register-form">
-            <button class="close-btn" id="closeAdminRegister" style="position: absolute; top: 8px; right: 8px;">×</button>
-            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Admin Registration</h2>
-            <div class="form-group">
-                <label for="regName">Full Name</label>
-                <input type="text" id="regName" placeholder="Enter full name" required>
-            </div>
-            <div class="form-group">
-                <label for="regEmail">Email</label>
-                <input type="email" id="regEmail" placeholder="admin@soran.edu.iq" required>
-            </div>
-            <div class="form-group">
-                <label for="regPassword">Password</label>
-                <input type="password" id="regPassword" placeholder="Create password" required>
-            </div>
-            <div class="form-group">
-                <label for="regConfirmPassword">Confirm Password</label>
-                <input type="password" id="regConfirmPassword" placeholder="Confirm password" required>
-            </div>
-            <div class="form-group">
-                <label for="regDepartment">Department</label>
-                <select id="regDepartment" required>
-                    <option value="">Select department</option>
-                    <option value="IT">Information Technology</option>
-                    <option value="Admin">Administration</option>
-                    <option value="Academic">Academic Affairs</option>
-                    <option value="Finance">Finance</option>
-                </select>
-            </div>
-            <button id="submitRegisterBtn" class="main-btn" style="width: 100%; margin-top: 15px;">Register</button>
-        </div>
-    </div>
-    
-    <!-- Admin Dashboard -->
-    <div class="admin-dashboard" id="adminDashboard">
-        <button class="close-btn" id="logoutBtn" style="align-self: flex-end; margin-bottom: 15px;">×</button>
-        <h2 style="text-align: center; margin-bottom: 20px; color: var(--soran-blue);">Admin Dashboard</h2>
-        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-            <h3 style="margin-bottom: 10px;">System Statistics</h3>
-            <p>Total Users: <span id="totalUsers">0</span></p>
-            <p>Active Sessions: <span id="activeSessions">0</span></p>
-            <p>Registered Admins: <span id="totalAdmins">0</span></p>
-        </div>
-        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px;">
-            <h3 style="margin-bottom: 10px;">Quick Actions</h3>
-            <button class="main-btn" style="margin-bottom: 8px; width: 100%;">Manage Users</button>
-            <button class="main-btn" style="margin-bottom: 8px; width: 100%;">View Logs</button>
-            <button class="main-btn" style="width: 100%;">System Settings</button>
-        </div>
-    </div>
-    
-    <!-- PWA Install Button -->
-    <button class="install-btn" id="installBtn">Install App</button>
-
     <script>
         // Speech system
         const synth = window.speechSynthesis;
@@ -665,186 +537,13 @@
             copyBtn: document.getElementById('copyBtn'),
             stopBtn: document.getElementById('stopBtn'),
             adminBtn: document.getElementById('adminBtn'),
-            adminLogin: document.getElementById('adminLogin'),
-            adminDashboard: document.getElementById('adminDashboard'),
-            loginBtn: document.getElementById('loginBtn'),
-            logoutBtn: document.getElementById('logoutBtn'),
-            totalUsers: document.getElementById('totalUsers'),
-            activeSessions: document.getElementById('activeSessions'),
-            totalAdmins: document.getElementById('totalAdmins'),
-            installBtn: document.getElementById('installBtn'),
-            addToHomeBtn: document.getElementById('addToHomeBtn'),
             aiBtn: document.getElementById('aiBtn'),
             aiPanel: document.getElementById('aiPanel'),
             backAi: document.getElementById('backAi'),
             closeAi: document.getElementById('closeAi'),
             aiFrame: document.getElementById('aiFrame'),
-            registerBtn: document.getElementById('registerBtn'),
-            adminRegister: document.getElementById('adminRegister'),
-            closeAdminLogin: document.getElementById('closeAdminLogin'),
-            closeAdminRegister: document.getElementById('closeAdminRegister'),
-            submitRegisterBtn: document.getElementById('submitRegisterBtn'),
             mainButtons: document.getElementById('mainButtons')
         };
-        
-        // Admin functionality
-        const adminCredentials = {
-            email: "admin@soran.edu.iq",
-            password: "SoranAdmin123"
-        };
-        
-        let users = JSON.parse(localStorage.getItem('soran_users')) || [];
-        let sessions = JSON.parse(localStorage.getItem('soran_sessions')) || [];
-        let admins = JSON.parse(localStorage.getItem('soran_admins')) || [];
-        
-        // Track current user
-        const userId = localStorage.getItem('soran_userId');
-        if (!userId) {
-            const newUserId = 'user_' + Date.now();
-            localStorage.setItem('soran_userId', newUserId);
-            users.push({
-                id: newUserId,
-                firstVisit: new Date().toISOString(),
-                lastVisit: new Date().toISOString()
-            });
-        } else {
-            const userIndex = users.findIndex(u => u.id === userId);
-            if (userIndex !== -1) {
-                users[userIndex].lastVisit = new Date().toISOString();
-            } else {
-                users.push({
-                    id: userId,
-                    firstVisit: new Date().toISOString(),
-                    lastVisit: new Date().toISOString()
-                });
-            }
-        }
-        
-        // Track session
-        const sessionId = 'session_' + Date.now();
-        sessions.push({
-            id: sessionId,
-            userId: userId,
-            startTime: new Date().toISOString(),
-            userAgent: navigator.userAgent
-        });
-        
-        // Save data
-        localStorage.setItem('soran_users', JSON.stringify(users));
-        localStorage.setItem('soran_sessions', JSON.stringify(sessions));
-        
-        // Copy text function
-        elements.copyBtn.addEventListener('click', () => {
-            const textToCopy = elements.responseText.textContent;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                const originalText = elements.copyBtn.innerHTML;
-                elements.copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                setTimeout(() => {
-                    elements.copyBtn.innerHTML = originalText;
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
-            });
-        });
-        
-        // PWA Installation
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            elements.installBtn.style.display = 'block';
-            elements.addToHomeBtn.style.display = 'block';
-        });
-        
-        elements.installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    elements.installBtn.style.display = 'none';
-                    elements.addToHomeBtn.style.display = 'none';
-                }
-                deferredPrompt = null;
-            }
-        });
-        
-        elements.addToHomeBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    elements.installBtn.style.display = 'none';
-                    elements.addToHomeBtn.style.display = 'none';
-                }
-                deferredPrompt = null;
-            }
-        });
-        
-        // Check if running as PWA
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            elements.installBtn.style.display = 'none';
-            elements.addToHomeBtn.style.display = 'none';
-        }
-        
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                // Inline service worker code
-                const swCode = `
-                    const CACHE_NAME = 'mustafa-edu-v1';
-                    const urlsToCache = [
-                        '/',
-                        '/index.html',
-                        'https://cdn.solo.to/user/a/668d94bac1a774_92482248.jpg',
-                        'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap',
-                        'https://mustafa-ai.vercel.app/',
-                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
-                    ];
-
-                    self.addEventListener('install', event => {
-                        event.waitUntil(
-                            caches.open(CACHE_NAME)
-                                .then(cache => cache.addAll(urlsToCache))
-                        );
-                    });
-
-                    self.addEventListener('fetch', event => {
-                        event.respondWith(
-                            caches.match(event.request)
-                                .then(response => response || fetch(event.request))
-                        );
-                    });
-                    
-                    self.addEventListener('message', event => {
-                        if (event.data === 'skipWaiting') {
-                            self.skipWaiting();
-                        }
-                    });
-                `;
-                
-                const blob = new Blob([swCode], {type: 'application/javascript'});
-                const swUrl = URL.createObjectURL(blob);
-                
-                navigator.serviceWorker.register(swUrl).then(registration => {
-                    console.log('ServiceWorker registration successful');
-                    
-                    // Check for updates
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                // New update available
-                                if (confirm('A new version is available. Reload to update?')) {
-                                    newWorker.postMessage('skipWaiting');
-                                    window.location.reload();
-                                }
-                            }
-                        });
-                    });
-                }).catch(err => {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
-            });
-        }
         
         // Show FAQ questions
         function showFAQ() {
@@ -912,37 +611,14 @@
             synth.cancel();
         });
         elements.adminBtn.addEventListener('click', () => {
-            elements.adminLogin.style.display = 'flex';
-        });
-        elements.loginBtn.addEventListener('click', () => {
-            const email = document.getElementById('adminEmail').value;
-            const password = document.getElementById('adminPassword').value;
-            
-            if (email === adminCredentials.email && password === adminCredentials.password) {
-                elements.adminLogin.style.display = 'none';
-                elements.adminDashboard.style.display = 'flex';
-                elements.totalUsers.textContent = users.length;
-                elements.activeSessions.textContent = sessions.filter(s => 
-                    new Date() - new Date(s.startTime) < 30*60*1000
-                ).length;
-                elements.totalAdmins.textContent = admins.length;
-                document.getElementById('adminEmail').value = '';
-                document.getElementById('adminPassword').value = '';
-            } else {
-                alert('Invalid credentials');
-            }
-        });
-        elements.logoutBtn.addEventListener('click', () => {
-            elements.adminDashboard.style.display = 'none';
+            alert('Admin panel will be displayed here. This is a placeholder for admin functionality.');
         });
         
-        // Improved AI Panel handling
+        // NEW AI Assistant functionality
         elements.aiBtn.addEventListener('click', () => {
             elements.aiPanel.style.display = 'flex';
-            elements.aiFrame.src = 'https://mustafa-ai.vercel.app/';
-            // Reset iframe size
-            elements.aiFrame.style.height = 'calc(100vh - 60px)';
             document.body.style.overflow = 'hidden';
+            elements.aiFrame.src = 'https://mustafa-ai.vercel.app/';
         });
         
         elements.backAi.addEventListener('click', () => {
@@ -955,74 +631,11 @@
             document.body.style.overflow = 'auto';
         });
         
-        elements.registerBtn.addEventListener('click', () => {
-            elements.adminLogin.style.display = 'none';
-            elements.adminRegister.style.display = 'flex';
-        });
-        elements.closeAdminLogin.addEventListener('click', () => {
-            elements.adminLogin.style.display = 'none';
-        });
-        elements.closeAdminRegister.addEventListener('click', () => {
-            elements.adminRegister.style.display = 'none';
-        });
-        elements.submitRegisterBtn.addEventListener('click', () => {
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const confirmPassword = document.getElementById('regConfirmPassword').value;
-            const department = document.getElementById('regDepartment').value;
-            
-            if (password !== confirmPassword) {
-                alert('Passwords do not match');
-                return;
-            }
-            
-            if (!name || !email || !password || !department) {
-                alert('Please fill all fields');
-                return;
-            }
-            
-            // Check if admin already exists
-            if (admins.some(a => a.email === email)) {
-                alert('Admin with this email already exists');
-                return;
-            }
-            
-            // Add new admin
-            admins.push({
-                id: 'admin_' + Date.now(),
-                name,
-                email,
-                password,
-                department,
-                registeredAt: new Date().toISOString()
-            });
-            
-            localStorage.setItem('soran_admins', JSON.stringify(admins));
-            
-            alert('Registration successful! Please login with your new credentials.');
-            elements.adminRegister.style.display = 'none';
-            elements.adminLogin.style.display = 'flex';
-            
-            // Clear form
-            document.getElementById('regName').value = '';
-            document.getElementById('regEmail').value = '';
-            document.getElementById('regPassword').value = '';
-            document.getElementById('regConfirmPassword').value = '';
-            document.getElementById('regDepartment').value = '';
-        });
-        
         // Close modals when clicking outside
         window.addEventListener('click', (e) => {
             if (e.target === elements.faqModal) {
                 elements.faqModal.style.display = 'none';
                 elements.mainButtons.style.display = 'flex';
-            }
-            if (e.target === elements.adminLogin) {
-                elements.adminLogin.style.display = 'none';
-            }
-            if (e.target === elements.adminRegister) {
-                elements.adminRegister.style.display = 'none';
             }
             if (e.target === elements.aiPanel) {
                 elements.aiPanel.style.display = 'none';
@@ -1038,33 +651,6 @@
         // On page load
         window.addEventListener('load', () => {
             synth.getVoices(); // Preload voices
-            
-            // Check for updates every 12 hours
-            if ('serviceWorker' in navigator) {
-                setInterval(() => {
-                    navigator.serviceWorker.getRegistration().then(reg => {
-                        if (reg) reg.update();
-                    });
-                }, 12 * 60 * 60 * 1000);
-            }
-            
-            // Hide add to home button initially
-            elements.addToHomeBtn.style.display = 'none';
-            
-            // Prevent back button in admin panels
-            window.addEventListener('popstate', (e) => {
-                if (elements.adminLogin.style.display === 'flex' || 
-                    elements.adminRegister.style.display === 'flex' || 
-                    elements.adminDashboard.style.display === 'flex') {
-                    history.pushState(null, null, window.location.href);
-                }
-            });
-            
-            // Push initial state
-            history.pushState(null, null, window.location.href);
-            
-            // Ensure the portal is the first thing shown
-            document.body.style.opacity = '1';
         });
     </script>
 </body>
