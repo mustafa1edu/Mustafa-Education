@@ -339,7 +339,8 @@
             flex: 1;
             border: none;
             width: 100%;
-            height: calc(100% - 60px);
+            height: 100%;
+            min-height: calc(100vh - 60px);
         }
         
         /* Registration Form */
@@ -475,7 +476,7 @@
             }
             
             .ai-iframe {
-                height: calc(100% - 56px);
+                height: calc(100vh - 56px);
             }
         }
     </style>
@@ -531,7 +532,7 @@
                 <button class="close-btn" id="closeAi">×</button>
             </div>
         </div>
-        <iframe src="https://mustafa-ai.vercel.app/" class="ai-iframe" id="aiFrame"></iframe>
+        <iframe src="https://mustafa-ai.vercel.app/" class="ai-iframe" id="aiFrame" title="AI Assistant"></iframe>
     </div>
     
     <!-- FAQ Modal -->
@@ -934,16 +935,26 @@
         elements.logoutBtn.addEventListener('click', () => {
             elements.adminDashboard.style.display = 'none';
         });
+        
+        // Improved AI Panel handling
         elements.aiBtn.addEventListener('click', () => {
             elements.aiPanel.style.display = 'flex';
             elements.aiFrame.src = 'https://mustafa-ai.vercel.app/';
+            // Reset iframe size
+            elements.aiFrame.style.height = 'calc(100vh - 60px)';
+            document.body.style.overflow = 'hidden';
         });
+        
         elements.backAi.addEventListener('click', () => {
             elements.aiPanel.style.display = 'none';
+            document.body.style.overflow = 'auto';
         });
+        
         elements.closeAi.addEventListener('click', () => {
             elements.aiPanel.style.display = 'none';
+            document.body.style.overflow = 'auto';
         });
+        
         elements.registerBtn.addEventListener('click', () => {
             elements.adminLogin.style.display = 'none';
             elements.adminRegister.style.display = 'flex';
@@ -1015,6 +1026,7 @@
             }
             if (e.target === elements.aiPanel) {
                 elements.aiPanel.style.display = 'none';
+                document.body.style.overflow = 'auto';
             }
         });
         
@@ -1050,6 +1062,9 @@
             
             // Push initial state
             history.pushState(null, null, window.location.href);
+            
+            // Ensure the portal is the first thing shown
+            document.body.style.opacity = '1';
         });
     </script>
 </body>
