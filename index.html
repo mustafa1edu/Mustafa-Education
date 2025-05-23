@@ -306,6 +306,10 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #eee;
+            background-color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         
         .ai-header-buttons {
@@ -319,18 +323,23 @@
             font-size: 20px;
             cursor: pointer;
             color: var(--soran-blue);
+            padding: 5px;
         }
         
         .ai-title {
             font-size: 18px;
             font-weight: 500;
             color: var(--soran-blue);
+            flex-grow: 1;
+            text-align: center;
+            padding: 0 10px;
         }
         
         .ai-iframe {
             flex: 1;
             border: none;
             width: 100%;
+            height: calc(100% - 60px);
         }
         
         /* Registration Form */
@@ -459,6 +468,15 @@
             .ai-title {
                 font-size: 16px;
             }
+            
+            .voice-btn, .copy-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            .ai-iframe {
+                height: calc(100% - 56px);
+            }
         }
     </style>
 </head>
@@ -470,7 +488,7 @@
     </header>
     
     <main>
-        <div class="buttons-container">
+        <div class="buttons-container" id="mainButtons">
             <a href="https://lms.soran.edu.iq/" class="main-btn">Learning Management System (LMS)</a>
             <a href="https://sis.soran.edu.iq/home.php" class="main-btn">Student Information System (SIS)</a>
             <button class="main-btn faq-btn" id="faqBtn">Frequently Asked Questions</button>
@@ -664,7 +682,8 @@
             adminRegister: document.getElementById('adminRegister'),
             closeAdminLogin: document.getElementById('closeAdminLogin'),
             closeAdminRegister: document.getElementById('closeAdminRegister'),
-            submitRegisterBtn: document.getElementById('submitRegisterBtn')
+            submitRegisterBtn: document.getElementById('submitRegisterBtn'),
+            mainButtons: document.getElementById('mainButtons')
         };
         
         // Admin functionality
@@ -828,6 +847,8 @@
         
         // Show FAQ questions
         function showFAQ() {
+            // Hide main buttons and show FAQ modal
+            elements.mainButtons.style.display = 'none';
             elements.faqList.innerHTML = '';
             faqData.forEach(item => {
                 const questionEl = document.createElement('div');
@@ -847,6 +868,7 @@
             elements.responseText.textContent = answer;
             elements.responseBox.style.display = 'block';
             elements.faqModal.style.display = 'none';
+            elements.mainButtons.style.display = 'flex';
         }
         
         // Speak answer with female voice
@@ -883,6 +905,7 @@
         elements.faqBtn.addEventListener('click', showFAQ);
         elements.closeFaq.addEventListener('click', () => {
             elements.faqModal.style.display = 'none';
+            elements.mainButtons.style.display = 'flex';
         });
         elements.stopBtn.addEventListener('click', () => {
             synth.cancel();
@@ -982,6 +1005,7 @@
         window.addEventListener('click', (e) => {
             if (e.target === elements.faqModal) {
                 elements.faqModal.style.display = 'none';
+                elements.mainButtons.style.display = 'flex';
             }
             if (e.target === elements.adminLogin) {
                 elements.adminLogin.style.display = 'none';
