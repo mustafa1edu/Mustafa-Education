@@ -78,7 +78,7 @@
             font-size: 16px;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             text-align: center;
             text-decoration: none;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -129,7 +129,7 @@
             align-items: center;
             gap: 4px;
             font-size: 13px;
-            transition: all 0.2s;
+            transition: all 0.3s;
             margin-top: 10px;
         }
         
@@ -155,7 +155,7 @@
             align-items: center;
             gap: 4px;
             font-size: 13px;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
         
         .voice-btn:hover {
@@ -203,6 +203,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .close-btn:hover {
+            transform: rotate(90deg);
         }
         
         .faq-item {
@@ -211,7 +216,7 @@
             margin: 8px 0;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             border-left: 4px solid var(--soran-blue);
         }
         
@@ -228,6 +233,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            z-index: 1100;
         }
         
         .admin-btn {
@@ -239,6 +245,11 @@
             cursor: pointer;
             font-size: 13px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .admin-btn:hover {
+            background-color: #222;
         }
         
         .add-to-home-btn {
@@ -251,9 +262,73 @@
             font-size: 13px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             display: none;
+            transition: all 0.3s;
         }
         
-        /* OPTIMIZED AI ASSISTANT */
+        .add-to-home-btn:hover {
+            background-color: #004a8a;
+        }
+        
+        /* Admin Panel Modal */
+        .admin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1200;
+        }
+        
+        .admin-modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalOpen 0.3s ease;
+        }
+        
+        .admin-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--soran-blue);
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--dark-gray);
+        }
+        
+        /* AI Assistant */
         .ai-assistant-btn {
             position: fixed;
             bottom: 30px;
@@ -328,6 +403,11 @@
             font-size: 20px;
             cursor: pointer;
             padding: 5px;
+            transition: all 0.3s;
+        }
+        
+        .ai-close-btn:hover {
+            transform: rotate(90deg);
         }
         
         .ai-iframe {
@@ -356,7 +436,7 @@
             align-items: center;
             gap: 5px;
             font-size: 14px;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
         
         .ai-footer-btn:hover {
@@ -429,6 +509,18 @@
                 font-size: 14px;
             }
             
+            .admin-modal-content {
+                padding: 20px 15px;
+            }
+            
+            .stat-card {
+                padding: 15px;
+            }
+            
+            .stat-value {
+                font-size: 28px;
+            }
+            
             .ai-assistant-btn {
                 width: 60px;
                 height: 60px;
@@ -489,12 +581,32 @@
         <button class="add-to-home-btn" id="addToHomeBtn">Add to Home Screen</button>
     </div>
     
-    <!-- OPTIMIZED AI Assistant Button -->
+    <!-- Admin Panel Modal -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-modal-content">
+            <button class="close-btn" id="closeAdmin">×</button>
+            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Admin Dashboard</h2>
+            
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="allTimeVisitors">0</div>
+                    <div class="stat-label">All Time Visitors</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="todayVisitors">0</div>
+                    <div class="stat-label">Today's Visitors</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI Assistant Button -->
     <button class="ai-assistant-btn pulse" id="aiBtn">
         <i class="fas fa-robot"></i>
     </button>
     
-    <!-- OPTIMIZED AI Panel -->
+    <!-- AI Panel -->
     <div class="ai-panel" id="aiPanel">
         <div class="ai-header">
             <button class="ai-close-btn" id="backAi">
@@ -535,7 +647,26 @@
         let currentUtterance = null;
         let deferredPrompt;
         
-        // FAQ data with updated contact info and name
+        // Visitor tracking
+        let allTimeVisitors = localStorage.getItem('allTimeVisitors') || 0;
+        let todayVisitors = localStorage.getItem('todayVisitors') || 0;
+        let lastVisitDate = localStorage.getItem('lastVisitDate');
+        
+        // Update visitor counts
+        const today = new Date().toDateString();
+        if (lastVisitDate !== today) {
+            todayVisitors = 0;
+            lastVisitDate = today;
+            localStorage.setItem('lastVisitDate', today);
+        }
+        
+        allTimeVisitors++;
+        todayVisitors++;
+        
+        localStorage.setItem('allTimeVisitors', allTimeVisitors);
+        localStorage.setItem('todayVisitors', todayVisitors);
+        
+        // FAQ data
         const faqData = [
             {
                 question: "Who created this system?",
@@ -574,6 +705,10 @@
             copyBtn: document.getElementById('copyBtn'),
             stopBtn: document.getElementById('stopBtn'),
             adminBtn: document.getElementById('adminBtn'),
+            adminModal: document.getElementById('adminModal'),
+            closeAdmin: document.getElementById('closeAdmin'),
+            allTimeVisitors: document.getElementById('allTimeVisitors'),
+            todayVisitors: document.getElementById('todayVisitors'),
             aiBtn: document.getElementById('aiBtn'),
             aiPanel: document.getElementById('aiPanel'),
             backAi: document.getElementById('backAi'),
@@ -583,9 +718,12 @@
             addToHomeBtn: document.getElementById('addToHomeBtn')
         };
         
+        // Initialize visitor counts
+        elements.allTimeVisitors.textContent = allTimeVisitors;
+        elements.todayVisitors.textContent = todayVisitors;
+        
         // Show FAQ questions
         function showFAQ() {
-            // Hide main buttons and show FAQ modal
             elements.mainButtons.style.display = 'none';
             elements.faqList.innerHTML = '';
             faqData.forEach(item => {
@@ -609,7 +747,7 @@
             elements.mainButtons.style.display = 'flex';
         }
         
-        // Speak answer with female voice
+        // Speak answer
         function speakAnswer(text) {
             if (!text || text.trim() === '') return;
             
@@ -621,7 +759,6 @@
             currentUtterance.lang = 'en-US';
             currentUtterance.rate = 1.0;
             
-            // Find best female English voice
             const voices = synth.getVoices();
             const femaleVoice = voices.find(v => 
                 (v.lang.includes('en-US') || v.lang.includes('en-GB')) && 
@@ -631,7 +768,6 @@
             if (femaleVoice) {
                 currentUtterance.voice = femaleVoice;
             } else {
-                // Fallback to any English voice if no female voice found
                 const englishVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en-GB'));
                 if (englishVoice) currentUtterance.voice = englishVoice;
             }
@@ -648,16 +784,21 @@
         elements.stopBtn.addEventListener('click', () => {
             synth.cancel();
         });
+        
+        // Admin panel
         elements.adminBtn.addEventListener('click', () => {
-            alert('Admin panel will be displayed here. This is a placeholder for admin functionality.');
+            elements.adminModal.style.display = 'flex';
         });
         
-        // OPTIMIZED AI Assistant functionality
+        elements.closeAdmin.addEventListener('click', () => {
+            elements.adminModal.style.display = 'none';
+        });
+        
+        // AI Assistant
         elements.aiBtn.addEventListener('click', () => {
             elements.aiPanel.classList.add('active');
             document.body.style.overflow = 'hidden';
             
-            // Reset iframe src to ensure fresh load
             if (!elements.aiFrame.src.includes('?')) {
                 elements.aiFrame.src = elements.aiFrame.src + '?t=' + Date.now();
             } else {
@@ -688,6 +829,9 @@
                 elements.faqModal.style.display = 'none';
                 elements.mainButtons.style.display = 'flex';
             }
+            if (e.target === elements.adminModal) {
+                elements.adminModal.style.display = 'none';
+            }
         });
         
         // PWA Installation
@@ -715,7 +859,7 @@
         
         // On page load
         window.addEventListener('load', () => {
-            synth.getVoices(); // Preload voices
+            synth.getVoices();
             
             // Check if running as PWA
             if (window.matchMedia('(display-mode: standalone)').matches) {
