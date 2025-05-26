@@ -225,8 +225,8 @@
             transform: translateX(3px);
         }
         
-        /* Admin Panel */
-        .admin-panel {
+        /* Support Panel */
+        .support-panel {
             position: fixed;
             top: 15px;
             right: 15px;
@@ -236,8 +236,8 @@
             z-index: 1100;
         }
         
-        .admin-btn {
-            background-color: var(--dark-gray);
+        .support-btn {
+            background-color: var(--soran-blue);
             color: white;
             border: none;
             padding: 8px 15px;
@@ -248,8 +248,8 @@
             transition: all 0.3s;
         }
         
-        .admin-btn:hover {
-            background-color: #222;
+        .support-btn:hover {
+            background-color: #004a8a;
         }
         
         .add-to-home-btn {
@@ -269,8 +269,8 @@
             background-color: #004a8a;
         }
         
-        /* Admin Panel Modal */
-        .admin-modal {
+        /* Support Modal */
+        .support-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -283,7 +283,7 @@
             z-index: 1200;
         }
         
-        .admin-modal-content {
+        .support-modal-content {
             background-color: white;
             padding: 25px;
             border-radius: 12px;
@@ -295,37 +295,57 @@
             animation: modalOpen 0.3s ease;
         }
         
-        .admin-stats {
+        .support-form {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             margin-top: 20px;
         }
         
-        .stat-card {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+        
+        .form-input, .form-textarea {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
             transition: all 0.3s;
         }
         
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
         }
         
-        .stat-value {
-            font-size: 32px;
-            font-weight: bold;
-            color: var(--soran-blue);
-            margin: 10px 0;
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--soran-blue);
+            box-shadow: 0 0 0 2px rgba(0,91,170,0.2);
         }
         
-        .stat-label {
-            font-size: 14px;
-            color: var(--dark-gray);
+        .submit-btn {
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #004a8a;
         }
         
         /* AI Assistant */
@@ -509,16 +529,8 @@
                 font-size: 14px;
             }
             
-            .admin-modal-content {
+            .support-modal-content {
                 padding: 20px 15px;
-            }
-            
-            .stat-card {
-                padding: 15px;
-            }
-            
-            .stat-value {
-                font-size: 28px;
             }
             
             .ai-assistant-btn {
@@ -575,29 +587,31 @@
         </div>
     </main>
     
-    <!-- Admin Panel Button -->
-    <div class="admin-panel">
-        <button class="admin-btn" id="adminBtn">Admin</button>
+    <!-- Support Panel Button -->
+    <div class="support-panel">
+        <button class="support-btn" id="supportBtn">Support</button>
         <button class="add-to-home-btn" id="addToHomeBtn">Add to Home Screen</button>
     </div>
     
-    <!-- Admin Panel Modal -->
-    <div class="admin-modal" id="adminModal">
-        <div class="admin-modal-content">
-            <button class="close-btn" id="closeAdmin">×</button>
-            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Admin Dashboard</h2>
+    <!-- Support Modal -->
+    <div class="support-modal" id="supportModal">
+        <div class="support-modal-content">
+            <button class="close-btn" id="closeSupport">×</button>
+            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Report a Problem</h2>
             
-            <div class="admin-stats">
-                <div class="stat-card">
-                    <div class="stat-value" id="allTimeVisitors">0</div>
-                    <div class="stat-label">All Time Visitors</div>
+            <form class="support-form" id="supportForm">
+                <div class="form-group">
+                    <label for="problem" class="form-label">کێشە (Problem)</label>
+                    <textarea id="problem" class="form-textarea" required></textarea>
                 </div>
                 
-                <div class="stat-card">
-                    <div class="stat-value" id="todayVisitors">0</div>
-                    <div class="stat-label">Today's Visitors</div>
+                <div class="form-group">
+                    <label for="name" class="form-label">ناوی سیانی (Your Name)</label>
+                    <input type="text" id="name" class="form-input" required>
                 </div>
-            </div>
+                
+                <button type="submit" class="submit-btn">Submit Report</button>
+            </form>
         </div>
     </div>
     
@@ -647,13 +661,18 @@
         let currentUtterance = null;
         let deferredPrompt;
         
+        // Telegram bot configuration - UPDATED WITH YOUR DETAILS
+        const BOT_TOKEN = "7827522136:AAEFceyUNALSIeiUcRNGboR1DYiN9R61Mo8";
+        const CHAT_ID = "7729017182"; // Your personal Telegram user ID
+        const USERNAME = "@comp_atom"; // Your Telegram username
+        
         // Visitor tracking
         let allTimeVisitors = localStorage.getItem('allTimeVisitors') || 0;
         let todayVisitors = localStorage.getItem('todayVisitors') || 0;
         let lastVisitDate = localStorage.getItem('lastVisitDate');
+        const today = new Date().toDateString();
         
         // Update visitor counts
-        const today = new Date().toDateString();
         if (lastVisitDate !== today) {
             todayVisitors = 0;
             lastVisitDate = today;
@@ -665,6 +684,49 @@
         
         localStorage.setItem('allTimeVisitors', allTimeVisitors);
         localStorage.setItem('todayVisitors', todayVisitors);
+        
+        // Function to send messages to Telegram
+        async function sendTelegramMessage(message) {
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            const params = new URLSearchParams();
+            params.append('chat_id', CHAT_ID);
+            params.append('text', `Message for ${USERNAME}:\n\n${message}`);
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: params
+                });
+                
+                const data = await response.json();
+                if (!data.ok) {
+                    throw new Error(data.description || 'Failed to send message');
+                }
+                return data;
+            } catch (error) {
+                console.error('Error sending message:', error);
+                throw error;
+            }
+        }
+        
+        // Send visitor data to Telegram bot (only once per day)
+        if (localStorage.getItem('lastReportDate') !== today) {
+            const visitorMessage = `📊 Website Visitor Stats:
+All Time: ${allTimeVisitors}
+Today: ${todayVisitors}
+Last Visit: ${new Date().toLocaleString()}`;
+            
+            sendTelegramMessage(visitorMessage)
+                .then(() => {
+                    localStorage.setItem('lastReportDate', today);
+                })
+                .catch(error => {
+                    console.error('Failed to send visitor stats:', error);
+                });
+        }
         
         // FAQ data
         const faqData = [
@@ -704,11 +766,12 @@
             responseText: document.getElementById('responseText'),
             copyBtn: document.getElementById('copyBtn'),
             stopBtn: document.getElementById('stopBtn'),
-            adminBtn: document.getElementById('adminBtn'),
-            adminModal: document.getElementById('adminModal'),
-            closeAdmin: document.getElementById('closeAdmin'),
-            allTimeVisitors: document.getElementById('allTimeVisitors'),
-            todayVisitors: document.getElementById('todayVisitors'),
+            supportBtn: document.getElementById('supportBtn'),
+            supportModal: document.getElementById('supportModal'),
+            closeSupport: document.getElementById('closeSupport'),
+            supportForm: document.getElementById('supportForm'),
+            problemInput: document.getElementById('problem'),
+            nameInput: document.getElementById('name'),
             aiBtn: document.getElementById('aiBtn'),
             aiPanel: document.getElementById('aiPanel'),
             backAi: document.getElementById('backAi'),
@@ -717,10 +780,6 @@
             mainButtons: document.getElementById('mainButtons'),
             addToHomeBtn: document.getElementById('addToHomeBtn')
         };
-        
-        // Initialize visitor counts
-        elements.allTimeVisitors.textContent = allTimeVisitors;
-        elements.todayVisitors.textContent = todayVisitors;
         
         // Show FAQ questions
         function showFAQ() {
@@ -775,6 +834,46 @@
             synth.speak(currentUtterance);
         }
         
+        // Support form submission
+        elements.supportForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const problem = elements.problemInput.value.trim();
+            const name = elements.nameInput.value.trim();
+            
+            if (!problem || !name) {
+                alert('تکایە هەموو خانەکان پڕ بکەرەوە\nPlease fill in all fields');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> نێردرێت...';
+            
+            const message = `❗ راپۆرتی کێشەی نوێ:\nناو: ${name}\nکێشە: ${problem}\nبەروار: ${new Date().toLocaleString()}\nوێبگەڕ: ${navigator.userAgent}`;
+            
+            try {
+                const response = await sendTelegramMessage(message);
+                
+                if (response.ok) {
+                    alert('ڕاپۆرتەکەت بە سەرکەوتوویی نێردرا! سوپاس\nYour report was sent successfully! Thank you.');
+                    elements.supportModal.style.display = 'none';
+                    elements.supportForm.reset();
+                } else {
+                    throw new Error('هەڵە لە ناردنی ڕاپۆرت');
+                }
+            } catch (error) {
+                console.error('هەڵە لە ناردنی ڕاپۆرت:', error);
+                alert(`هەڵەیەک ڕوویدا. تکایە دووبارە هەوڵبەرەوە یان پەیوەندی بە پشتگیرییەوە بکە:\n${error.message}\n\nAn error occurred. Please try again or contact support:\n${error.message}`);
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+
         // Event listeners
         elements.faqBtn.addEventListener('click', showFAQ);
         elements.closeFaq.addEventListener('click', () => {
@@ -785,13 +884,13 @@
             synth.cancel();
         });
         
-        // Admin panel
-        elements.adminBtn.addEventListener('click', () => {
-            elements.adminModal.style.display = 'flex';
+        // Support panel
+        elements.supportBtn.addEventListener('click', () => {
+            elements.supportModal.style.display = 'flex';
         });
         
-        elements.closeAdmin.addEventListener('click', () => {
-            elements.adminModal.style.display = 'none';
+        elements.closeSupport.addEventListener('click', () => {
+            elements.supportModal.style.display = 'none';
         });
         
         // AI Assistant
@@ -829,8 +928,8 @@
                 elements.faqModal.style.display = 'none';
                 elements.mainButtons.style.display = 'flex';
             }
-            if (e.target === elements.adminModal) {
-                elements.adminModal.style.display = 'none';
+            if (e.target === elements.supportModal) {
+                elements.supportModal.style.display = 'none';
             }
         });
         
