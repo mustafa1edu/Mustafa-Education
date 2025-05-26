@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#005baa">
     <meta name="description" content="Mustafa.EDU Portal for LMS and SIS access">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -24,6 +24,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Roboto', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
@@ -34,6 +35,8 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            overflow-x: hidden;
+            touch-action: manipulation;
         }
         
         header {
@@ -250,7 +253,7 @@
             display: none;
         }
         
-        /* NEW AI ASSISTANT DESIGN */
+        /* OPTIMIZED AI ASSISTANT */
         .ai-assistant-btn {
             position: fixed;
             bottom: 30px;
@@ -290,7 +293,13 @@
             display: none;
             flex-direction: column;
             z-index: 1002;
-            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .ai-panel.active {
+            transform: translateY(0);
+            display: flex;
         }
         
         .ai-header {
@@ -354,6 +363,26 @@
             background-color: #e1e5eb;
         }
         
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0,91,170,0.1);
+            border-radius: 50%;
+            border-top-color: var(--soran-blue);
+            animation: spin 1s linear infinite;
+        }
+        
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -375,6 +404,10 @@
             0% { box-shadow: 0 0 0 0 rgba(0,91,170,0.4); }
             70% { box-shadow: 0 0 0 12px rgba(0,91,170,0); }
             100% { box-shadow: 0 0 0 0 rgba(0,91,170,0); }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         @media (max-width: 600px) {
@@ -456,12 +489,12 @@
         <button class="add-to-home-btn" id="addToHomeBtn">Add to Home Screen</button>
     </div>
     
-    <!-- NEW AI Assistant Button -->
+    <!-- OPTIMIZED AI Assistant Button -->
     <button class="ai-assistant-btn pulse" id="aiBtn">
         <i class="fas fa-robot"></i>
     </button>
     
-    <!-- NEW AI Panel -->
+    <!-- OPTIMIZED AI Panel -->
     <div class="ai-panel" id="aiPanel">
         <div class="ai-header">
             <button class="ai-close-btn" id="backAi">
@@ -472,7 +505,11 @@
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <iframe src="https://mustafa-ai.vercel.app/" class="ai-iframe" id="aiFrame" title="AI Assistant"></iframe>
+        <div class="loading" id="aiLoading">
+            <div class="spinner"></div>
+            <div>Loading Assistant...</div>
+        </div>
+        <iframe src="https://mustafa-ai.vercel.app/" class="ai-iframe" id="aiFrame" title="AI Assistant" onload="document.getElementById('aiLoading').style.display='none';"></iframe>
         <div class="ai-footer">
             <button class="ai-footer-btn">
                 <i class="fas fa-history"></i> History
@@ -542,7 +579,8 @@
             backAi: document.getElementById('backAi'),
             closeAi: document.getElementById('closeAi'),
             aiFrame: document.getElementById('aiFrame'),
-            mainButtons: document.getElementById('mainButtons')
+            mainButtons: document.getElementById('mainButtons'),
+            addToHomeBtn: document.getElementById('addToHomeBtn')
         };
         
         // Show FAQ questions
@@ -614,22 +652,35 @@
             alert('Admin panel will be displayed here. This is a placeholder for admin functionality.');
         });
         
-        // NEW AI Assistant functionality
+        // OPTIMIZED AI Assistant functionality
         elements.aiBtn.addEventListener('click', () => {
-            elements.aiPanel.style.display = 'flex';
+            elements.aiPanel.classList.add('active');
             document.body.style.overflow = 'hidden';
-            elements.aiFrame.src = 'https://mustafa-ai.vercel.app/';
+            
+            // Reset iframe src to ensure fresh load
+            if (!elements.aiFrame.src.includes('?')) {
+                elements.aiFrame.src = elements.aiFrame.src + '?t=' + Date.now();
+            } else {
+                elements.aiFrame.src = 'https://mustafa-ai.vercel.app/?t=' + Date.now();
+            }
+            
+            document.getElementById('aiLoading').style.display = 'flex';
         });
         
-        elements.backAi.addEventListener('click', () => {
-            elements.aiPanel.style.display = 'none';
+        function closeAIPanel() {
+            elements.aiPanel.classList.remove('active');
             document.body.style.overflow = 'auto';
-        });
+        }
         
-        elements.closeAi.addEventListener('click', () => {
-            elements.aiPanel.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        });
+        elements.backAi.addEventListener('click', closeAIPanel);
+        elements.closeAi.addEventListener('click', closeAIPanel);
+        
+        // Prevent scrolling when AI panel is open
+        elements.aiPanel.addEventListener('touchmove', (e) => {
+            if (elements.aiPanel.classList.contains('active')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
         
         // Close modals when clicking outside
         window.addEventListener('click', (e) => {
@@ -637,9 +688,23 @@
                 elements.faqModal.style.display = 'none';
                 elements.mainButtons.style.display = 'flex';
             }
-            if (e.target === elements.aiPanel) {
-                elements.aiPanel.style.display = 'none';
-                document.body.style.overflow = 'auto';
+        });
+        
+        // PWA Installation
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            elements.addToHomeBtn.style.display = 'block';
+        });
+        
+        elements.addToHomeBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    elements.addToHomeBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
             }
         });
         
@@ -651,6 +716,20 @@
         // On page load
         window.addEventListener('load', () => {
             synth.getVoices(); // Preload voices
+            
+            // Check if running as PWA
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                console.log('Running as PWA');
+            }
+            
+            // Service Worker Registration
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registered');
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            }
         });
     </script>
 </body>
