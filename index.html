@@ -661,38 +661,118 @@
         let currentUtterance = null;
         let deferredPrompt;
         
-        // Telegram bot configuration - UPDATED WITH YOUR DETAILS
+        // Telegram bot configuration
         const BOT_TOKEN = "7827522136:AAEFceyUNALSIeiUcRNGboR1DYiN9R61Mo8";
         const CHAT_ID = "7729017182"; // Your personal Telegram user ID
         const USERNAME = "@comp_atom"; // Your Telegram username
-        
-        // Visitor tracking
-        let allTimeVisitors = localStorage.getItem('allTimeVisitors') || 0;
-        let todayVisitors = localStorage.getItem('todayVisitors') || 0;
-        let lastVisitDate = localStorage.getItem('lastVisitDate');
-        const today = new Date().toDateString();
-        
-        // Update visitor counts
-        if (lastVisitDate !== today) {
-            todayVisitors = 0;
-            lastVisitDate = today;
-            localStorage.setItem('lastVisitDate', today);
+
+        // Enhanced analytics tracking with unique visitor identification
+        const analytics = {
+            allTimeVisitors: localStorage.getItem('allTimeVisitors') ? parseInt(localStorage.getItem('allTimeVisitors')) : 0,
+            todayVisitors: localStorage.getItem('todayVisitors') ? parseInt(localStorage.getItem('todayVisitors')) : 0,
+            addedToHomeScreen: localStorage.getItem('addedToHomeScreen') ? parseInt(localStorage.getItem('addedToHomeScreen')) : 0,
+            lastVisitDate: localStorage.getItem('lastVisitDate'),
+            lastReportDate: localStorage.getItem('lastReportDate'),
+            visitorId: localStorage.getItem('visitorId') || generateVisitorId(),
+            firstVisit: localStorage.getItem('firstVisit') === null,
+            lastVisitTime: localStorage.getItem('lastVisitTime')
+        };
+
+        // Generate a unique visitor ID
+        function generateVisitorId() {
+            return 'visitor-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now().toString(36);
         }
-        
-        allTimeVisitors++;
-        todayVisitors++;
-        
-        localStorage.setItem('allTimeVisitors', allTimeVisitors);
-        localStorage.setItem('todayVisitors', todayVisitors);
-        
-        // Function to send messages to Telegram
+
+        // Initialize or update visitor tracking
+        function updateVisitorTracking() {
+            const today = new Date().toDateString();
+            const now = new Date().toISOString();
+            
+            // Check if this is a new day
+            if (analytics.lastVisitDate !== today) {
+                analytics.todayVisitors = 0;
+                analytics.lastVisitDate = today;
+            }
+            
+            // Check if this is a new visit (more than 30 minutes since last visit)
+            const lastVisit = analytics.lastVisitTime ? new Date(analytics.lastVisitTime) : null;
+            const isNewVisit = !lastVisit || (new Date() - lastVisit) > 30 * 60 * 1000;
+            
+            if (isNewVisit) {
+                analytics.allTimeVisitors++;
+                analytics.todayVisitors++;
+                analytics.lastVisitTime = now;
+                
+                // Save to localStorage
+                localStorage.setItem('allTimeVisitors', analytics.allTimeVisitors);
+                localStorage.setItem('todayVisitors', analytics.todayVisitors);
+                localStorage.setItem('lastVisitDate', today);
+                localStorage.setItem('lastVisitTime', now);
+                localStorage.setItem('visitorId', analytics.visitorId);
+                
+                // If this is the first visit ever
+                if (analytics.firstVisit) {
+                    localStorage.setItem('firstVisit', 'false');
+                    analytics.firstVisit = false;
+                }
+                
+                // Send notification to Telegram
+                sendVisitorNotification(isNewVisit);
+            }
+            
+            // Send daily report (only once per day)
+            if (analytics.lastReportDate !== today) {
+                sendDailyReport();
+                analytics.lastReportDate = today;
+                localStorage.setItem('lastReportDate', today);
+            }
+        }
+
+        // Send visitor notification to Telegram
+        async function sendVisitorNotification(isNewVisit) {
+            const userAgent = navigator.userAgent;
+            const platform = navigator.platform;
+            const screenWidth = window.screen.width;
+            const screenHeight = window.screen.height;
+            const language = navigator.language;
+            const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+            const referrer = document.referrer || 'Direct';
+            
+            const message = `👤 ${isNewVisit ? 'New Visitor' : 'Returning Visitor'}
+🆔 ${analytics.visitorId}
+📅 Date: ${new Date().toLocaleString()}
+🌐 Page: ${window.location.href}
+📱 Device: ${platform} ${isPWA ? '(PWA)' : ''}
+🖥️ Screen: ${screenWidth}x${screenHeight}
+🌍 Language: ${language}
+🔗 Referrer: ${referrer}
+🔄 Total Visitors: ${analytics.allTimeVisitors}
+📊 Today's Visitors: ${analytics.todayVisitors}`;
+            
+            await sendTelegramMessage(message);
+        }
+
+        // Send daily report
+        async function sendDailyReport() {
+            const reportMessage = `📊 Daily Analytics Report
+📅 Date: ${new Date().toLocaleDateString()}
+👥 Visitors Today: ${analytics.todayVisitors}
+👥 All Time Visitors: ${analytics.allTimeVisitors}
+📱 PWA Installations: ${analytics.addedToHomeScreen}
+🔄 Active Visitors: ${navigator.onLine ? 'Online' : 'Offline'}`;
+            
+            await sendTelegramMessage(reportMessage);
+        }
+
+        // Enhanced Telegram message handler
         async function sendTelegramMessage(message) {
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
             const params = new URLSearchParams();
             params.append('chat_id', CHAT_ID);
-            params.append('text', `Message for ${USERNAME}:\n\n${message}`);
+            params.append('text', message);
             
             try {
+                // First try with fetch
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -702,32 +782,34 @@
                 });
                 
                 const data = await response.json();
+                
                 if (!data.ok) {
-                    throw new Error(data.description || 'Failed to send message');
+                    // Fallback to image-based request if fetch fails
+                    await sendTelegramFallback(message);
                 }
+                
                 return data;
             } catch (error) {
                 console.error('Error sending message:', error);
-                throw error;
+                // Try fallback method
+                await sendTelegramFallback(message);
+                return {ok: false};
             }
         }
-        
-        // Send visitor data to Telegram bot (only once per day)
-        if (localStorage.getItem('lastReportDate') !== today) {
-            const visitorMessage = `📊 Website Visitor Stats:
-All Time: ${allTimeVisitors}
-Today: ${todayVisitors}
-Last Visit: ${new Date().toLocaleString()}`;
-            
-            sendTelegramMessage(visitorMessage)
-                .then(() => {
-                    localStorage.setItem('lastReportDate', today);
-                })
-                .catch(error => {
-                    console.error('Failed to send visitor stats:', error);
-                });
+
+        // Fallback method for sending messages when fetch is blocked
+        async function sendTelegramFallback(message) {
+            try {
+                // Encode message in image URL as fallback
+                const img = new Image();
+                img.src = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
+                return {ok: true};
+            } catch (error) {
+                console.error('Fallback method also failed:', error);
+                return {ok: false};
+            }
         }
-        
+
         // FAQ data
         const faqData = [
             {
@@ -852,7 +934,7 @@ Last Visit: ${new Date().toLocaleString()}`;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> نێردرێت...';
             
-            const message = `❗ راپۆرتی کێشەی نوێ:\nناو: ${name}\nکێشە: ${problem}\nبەروار: ${new Date().toLocaleString()}\nوێبگەڕ: ${navigator.userAgent}`;
+            const message = `❗ راپۆرتی کێشەی نوێ:\nناو: ${name}\nکێشە: ${problem}\nبەروار: ${new Date().toLocaleString()}\nوێبگەڕ: ${navigator.userAgent}\nVisitor ID: ${analytics.visitorId}`;
             
             try {
                 const response = await sendTelegramMessage(message);
@@ -945,6 +1027,9 @@ Last Visit: ${new Date().toLocaleString()}`;
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
+                    analytics.addedToHomeScreen++;
+                    localStorage.setItem('addedToHomeScreen', analytics.addedToHomeScreen);
+                    await sendTelegramMessage(`📱 New PWA Installation\nVisitor ID: ${analytics.visitorId}\nTotal Installations: ${analytics.addedToHomeScreen}`);
                     elements.addToHomeBtn.style.display = 'none';
                 }
                 deferredPrompt = null;
@@ -958,6 +1043,10 @@ Last Visit: ${new Date().toLocaleString()}`;
         
         // On page load
         window.addEventListener('load', () => {
+            // Initialize analytics and tracking
+            updateVisitorTracking();
+            
+            // Initialize voices
             synth.getVoices();
             
             // Check if running as PWA
@@ -973,6 +1062,25 @@ Last Visit: ${new Date().toLocaleString()}`;
                     console.log('ServiceWorker registration failed: ', err);
                 });
             }
+        });
+        
+        // Track page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                // Page became visible again - check if it's a new visit
+                const lastVisit = analytics.lastVisitTime ? new Date(analytics.lastVisitTime) : null;
+                const isNewVisit = !lastVisit || (new Date() - lastVisit) > 30 * 60 * 1000;
+                
+                if (isNewVisit) {
+                    updateVisitorTracking();
+                }
+            }
+        });
+        
+        // Track beforeunload event
+        window.addEventListener('beforeunload', () => {
+            // Update last visit time when leaving the page
+            localStorage.setItem('lastVisitTime', new Date().toISOString());
         });
     </script>
 </body>
