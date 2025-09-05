@@ -162,112 +162,6 @@
             background-color: var(--dark-gray);
         }
         
-        /* Welcome Modal Styles */
-        .welcome-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .welcome-content {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 91, 170, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .welcome-content::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
-            transform: rotate(30deg);
-            animation: shine 3s infinite linear;
-        }
-        
-        .welcome-text {
-            font-size: 28px;
-            color: white;
-            margin-bottom: 30px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            font-weight: bold;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .welcome-btn {
-            background: linear-gradient(45deg, var(--soran-blue), #0077cc);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            position: relative;
-            z-index: 2;
-        }
-        
-        .welcome-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-        
-        /* Fireworks */
-        .firework {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            pointer-events: none;
-            opacity: 0;
-        }
-        
-        @keyframes firework {
-            0% {
-                transform: translate(var(--x), var(--y)) scale(0);
-                opacity: 1;
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--x), var(--y)) scale(1);
-                opacity: 0;
-                width: 40px;
-                height: 40px;
-            }
-        }
-        
-        @keyframes shine {
-            0% {
-                transform: rotate(30deg) translateY(-100%);
-            }
-            100% {
-                transform: rotate(30deg) translateY(100%);
-            }
-        }
-        
         /* FAQ Modal */
         .modal {
             position: fixed;
@@ -639,14 +533,6 @@
                 padding: 20px 15px;
             }
             
-            .welcome-text {
-                font-size: 22px;
-            }
-            
-            .welcome-content {
-                padding: 20px;
-            }
-            
             .ai-assistant-btn {
                 width: 60px;
                 height: 60px;
@@ -671,14 +557,6 @@
     </style>
 </head>
 <body>
-    <!-- Welcome Modal -->
-    <div class="welcome-modal" id="welcomeModal">
-        <div class="welcome-content">
-            <div class="welcome-text">بەخێر بێن بۆ ساڵی نوێی خوێندن</div>
-            <button class="welcome-btn" id="welcomeBtn">باشە</button>
-        </div>
-    </div>
-    
     <header>
         <img src="https://cdn.solo.to/user/a/668d94bac1a774_92482248.jpg" alt="Mustafa.EDU Logo" class="logo">
         <h1>Mustafa.EDU Portal</h1>
@@ -800,8 +678,7 @@
             firstVisit: localStorage.getItem('firstVisit') === null,
             lastVisitTime: localStorage.getItem('lastVisitTime'),
             sessionStart: new Date().getTime(),
-            pageViews: localStorage.getItem('pageViews') ? parseInt(localStorage.getItem('pageViews')) : 0,
-            welcomeShown: localStorage.getItem('welcomeShown') === 'true'
+            pageViews: localStorage.getItem('pageViews') ? parseInt(localStorage.getItem('pageViews')) : 0
         };
 
         // Generate a unique visitor ID
@@ -1004,8 +881,6 @@
         
         // DOM Elements
         const elements = {
-            welcomeModal: document.getElementById('welcomeModal'),
-            welcomeBtn: document.getElementById('welcomeBtn'),
             faqBtn: document.getElementById('faqBtn'),
             faqModal: document.getElementById('faqModal'),
             closeFaq: document.getElementById('closeFaq'),
@@ -1028,78 +903,6 @@
             mainButtons: document.getElementById('mainButtons'),
             addToHomeBtn: document.getElementById('addToHomeBtn')
         };
-        
-        // Create fireworks effect
-        function createFireworks() {
-            const container = document.querySelector('.welcome-content');
-            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
-            
-            for (let i = 0; i < 50; i++) {
-                const firework = document.createElement('div');
-                firework.classList.add('firework');
-                
-                // Random position
-                const x = Math.random() * 100 - 50;
-                const y = Math.random() * 100 - 50;
-                
-                // Random color
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                
-                // Set CSS custom properties
-                firework.style.setProperty('--x', `${x}px`);
-                firework.style.setProperty('--y', `${y}px`);
-                firework.style.background = color;
-                
-                // Random delay and duration
-                const delay = Math.random() * 2;
-                const duration = 1 + Math.random() * 2;
-                
-                firework.style.animation = `firework ${duration}s ${delay}s forwards`;
-                
-                container.appendChild(firework);
-                
-                // Remove after animation completes
-                setTimeout(() => {
-                    firework.remove();
-                }, (delay + duration) * 1000);
-            }
-            
-            // Continue creating fireworks
-            setTimeout(createFireworks, 300);
-        }
-        
-        // Show welcome modal if not shown before
-        function showWelcomeModal() {
-            if (!analytics.welcomeShown) {
-                elements.welcomeModal.style.display = 'flex';
-                createFireworks();
-                
-                // Mark as shown
-                analytics.welcomeShown = true;
-                localStorage.setItem('welcomeShown', 'true');
-                
-                // Track this event
-                const message = `🎉 Welcome Modal Shown
-🆔 ${analytics.visitorId}
-📅 Date: ${new Date().toLocaleString()}`;
-                
-                sendTelegramMessage(message);
-            }
-        }
-        
-        // Handle welcome button click
-        elements.welcomeBtn.addEventListener('click', () => {
-            elements.welcomeModal.style.display = 'none';
-            window.open('https://t.me/Faculty_OfEducation', '_blank');
-            
-            // Track this action
-            const message = `✅ Welcome Button Clicked
-🆔 ${analytics.visitorId}
-📅 Date: ${new Date().toLocaleString()}
-🔗 Telegram Channel Opened`;
-            
-            sendTelegramMessage(message);
-        });
         
         // Show FAQ questions
         function showFAQ() {
@@ -1251,10 +1054,6 @@
             if (e.target === elements.supportModal) {
                 elements.supportModal.style.display = 'none';
             }
-            if (e.target === elements.welcomeModal) {
-                // Don't close welcome modal when clicking outside
-                // elements.welcomeModal.style.display = 'none';
-            }
         });
         
         // PWA Installation
@@ -1309,9 +1108,6 @@
         window.addEventListener('load', () => {
             // Initialize analytics and tracking
             updateVisitorTracking();
-            
-            // Show welcome modal if not shown before
-            showWelcomeModal();
             
             // Initialize voices
             synth.getVoices();
