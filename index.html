@@ -1,220 +1,1187 @@
 <!DOCTYPE html>
-<html lang="ku">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>وێبسایتی سادە</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#005baa">
+    <meta name="description" content="Mustafa.EDU Portal for LMS and SIS access">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Mustafa.EDU Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --soran-blue: #005baa;
+            --soran-yellow: #ffd700;
+            --soran-red: #e31937;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333333;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Roboto', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
             min-height: 100vh;
-            overflow: hidden;
-            color: #333;
-        }
-        
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        .container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             padding: 20px;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            color: var(--soran-blue);
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 450px;
+            margin-bottom: 20px;
+        }
+        
+        .main-btn {
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .main-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background-color: #004a8a;
+        }
+        
+        .faq-btn {
+            background-color: var(--soran-red);
+        }
+        
+        .faq-btn:hover {
+            background-color: #c2102e;
+        }
+        
+        .response-box {
+            background-color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .response-text {
+            line-height: 1.5;
+            font-size: 15px;
+            padding: 8px;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        
+        .copy-btn {
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--dark-gray);
+        }
+        
+        .voice-controls {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .voice-btn {
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        
+        .voice-btn:hover {
+            background-color: var(--dark-gray);
+        }
+        
+        /* FAQ Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalOpen 0.3s ease;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: var(--soran-red);
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .close-btn:hover {
+            transform: rotate(90deg);
+        }
+        
+        .faq-item {
+            background-color: #f8f9fa;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--soran-blue);
+        }
+        
+        .faq-item:hover {
+            background-color: #e9ecef;
+            transform: translateX(3px);
+        }
+        
+        /* Support Panel */
+        .support-panel {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1100;
+        }
+        
+        .support-btn {
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 13px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .support-btn:hover {
+            background-color: #004a8a;
+        }
+        
+        .add-to-home-btn {
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 13px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            display: none;
+            transition: all 0.3s;
+        }
+        
+        .add-to-home-btn:hover {
+            background-color: #004a8a;
+        }
+        
+        /* Support Modal */
+        .support-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1200;
+        }
+        
+        .support-modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalOpen 0.3s ease;
+        }
+        
+        .support-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+        
+        .form-input, .form-textarea {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--soran-blue);
+            box-shadow: 0 0 0 2px rgba(0,91,170,0.2);
+        }
+        
+        .submit-btn {
+            background-color: var(--soran-blue);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #004a8a;
+        }
+        
+        /* AI Assistant */
+        .ai-assistant-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--soran-blue), #0077cc);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,91,170,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-assistant-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,91,170,0.4);
+        }
+        
+        .ai-assistant-btn.pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .ai-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            display: none;
+            flex-direction: column;
+            z-index: 1002;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .ai-panel.active {
+            transform: translateY(0);
+            display: flex;
+        }
+        
+        .ai-header {
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--soran-blue);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .ai-title {
+            font-size: 18px;
+            font-weight: 500;
+            flex-grow: 1;
             text-align: center;
         }
         
-        .circle {
-            width: 320px;
-            height: 320px;
-            background: radial-gradient(circle at center, #87CEEB, #5F9EA0);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 
-                        inset 0 10px 20px rgba(255, 255, 255, 0.5);
-            animation: pulse 2.5s infinite alternate, float 6s infinite ease-in-out;
-            position: relative;
-            overflow: hidden;
+        .ai-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            transition: all 0.3s;
         }
         
-        .circle::before {
-            content: '';
+        .ai-close-btn:hover {
+            transform: rotate(90deg);
+        }
+        
+        .ai-iframe {
+            flex: 1;
+            border: none;
+            width: 100%;
+            height: calc(100% - 60px);
+        }
+        
+        .ai-footer {
+            padding: 12px 20px;
+            background-color: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .ai-footer-btn {
+            background-color: var(--light-gray);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .ai-footer-btn:hover {
+            background-color: #e1e5eb;
+        }
+        
+        .loading {
             position: absolute;
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 10%, transparent 10.5%);
-            background-size: 20px 20px;
-            background-position: 0 0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0,91,170,0.1);
             border-radius: 50%;
-            animation: rotate 30s infinite linear;
-            opacity: 0.1;
+            border-top-color: var(--soran-blue);
+            animation: spin 1s linear infinite;
+        }
+        
+        /* New Image Section Styles */
+        .image-section {
+            width: 100%;
+            max-width: 450px;
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .image-section img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        
+        .image-section:hover img {
+            transform: scale(1.02);
+        }
+        
+        .image-caption {
+            background-color: white;
+            padding: 12px 15px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--dark-gray);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes modalOpen {
+            from { 
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         
         @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
+            0% { box-shadow: 0 0 0 0 rgba(0,91,170,0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(0,91,170,0); }
+            100% { box-shadow: 0 0 0 0 rgba(0,91,170,0); }
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .message {
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-            text-align: center;
-            padding: 30px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
-            animation: textGlow 2s infinite alternate;
-        }
-        
-        @keyframes textGlow {
-            0% { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); }
-            100% { text-shadow: 2px 2px 16px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.8); }
-        }
-        
-        .button {
-            background: linear-gradient(to right, #4CAF50, #2E8B57);
-            border: none;
-            color: white;
-            padding: 18px 40px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 20px;
-            font-weight: bold;
-            margin: 25px 0;
-            cursor: pointer;
-            border-radius: 50px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(to right, #2E8B57, #4CAF50);
-        }
-        
-        .button:active {
-            transform: translateY(2px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        .button::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: rgba(255, 255, 255, 0.1);
-            transform: rotate(30deg);
-            transition: all 0.5s ease;
-        }
-        
-        .button:hover::after {
-            transform: rotate(30deg) translate(10%, 10%);
-        }
-        
-        .icon {
-            margin-right: 10px;
-        }
-        
-        .footer {
-            margin-top: 30px;
-            color: white;
-            font-size: 16px;
-            opacity: 0.8;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-        }
-        
-        @media (max-width: 768px) {
-            .circle {
-                width: 280px;
-                height: 280px;
+        @media (max-width: 600px) {
+            .logo {
+                width: 100px;
+                height: 100px;
             }
             
-            .message {
-                font-size: 24px;
-            }
-            
-            .button {
-                padding: 16px 35px;
-                font-size: 18px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .circle {
-                width: 240px;
-                height: 240px;
-            }
-            
-            .message {
+            h1 {
                 font-size: 20px;
-                padding: 20px;
             }
             
-            .button {
-                padding: 14px 30px;
+            .main-btn {
+                padding: 12px 20px;
+                font-size: 15px;
+            }
+            
+            .response-text {
+                font-size: 14px;
+            }
+            
+            .support-modal-content {
+                padding: 20px 15px;
+            }
+            
+            .ai-assistant-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 22px;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .ai-header {
+                padding: 15px;
+            }
+            
+            .ai-title {
                 font-size: 16px;
+            }
+            
+            .ai-footer-btn {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+            
+            .image-section {
+                margin: 15px 0;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="circle">
-            <div class="message">لەژێر ئەپدەیتکردنەوەدایە</div>
+    <header>
+        <img src="https://cdn.solo.to/user/a/668d94bac1a774_92482248.jpg" alt="Mustafa.EDU Logo" class="logo">
+        <h1>Mustafa.EDU Portal</h1>
+        <p>Learning Management and Student Information System</p>
+    </header>
+    
+    <main>
+        <div class="buttons-container" id="mainButtons">
+            <a href="https://lms.soran.edu.iq/" class="main-btn">Learning Management System (LMS)</a>
+            <a href="https://sis.soran.edu.iq/home.php" class="main-btn">Student Information System (SIS)</a>
+            <button class="main-btn faq-btn" id="faqBtn">Frequently Asked Questions</button>
         </div>
         
-        <button class="button" onclick="window.open('https://t.me/Faculty_OfEducation', '_blank')">
-            <i class="fab fa-telegram icon"></i>باشە
-        </button>
+        <!-- New Image Section -->
+         <a href="https://t.me/Faculty_OfEducation">
+        <div class="image-section">
+            <img src="IMG_0006.PNG" width="800">
+            <div class="image-caption">
+              <b>کلیک بکە بۆ جۆینکردن</b>
+            </div>
+            </a>
+        </div>
         
-        <div class="footer">
-         MUSTAFA.EDU دامەزراوەی 
+        <div class="response-box" id="responseBox">
+            <div class="response-text" id="responseText"></div>
+            <button class="copy-btn" id="copyBtn">
+                <i class="fas fa-copy"></i>
+                Copy Text
+            </button>
+            <div class="voice-controls">
+                <button class="voice-btn" id="stopBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
+                        <path d="M6 6h12v12H6z" fill="white"/>
+                    </svg>
+                    Stop Voice
+                </button>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Support Panel Button -->
+    <div class="support-panel">
+        <button class="support-btn" id="supportBtn">Support</button>
+        <button class="add-to-home-btn" id="addToHomeBtn">Add to Home Screen</button>
+    </div>
+    
+    <!-- Support Modal -->
+    <div class="support-modal" id="supportModal">
+        <div class="support-modal-content">
+            <button class="close-btn" id="closeSupport">×</button>
+            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Report a Problem</h2>
+            
+            <form class="support-form" id="supportForm">
+                <div class="form-group">
+                    <label for="problem" class="form-label">کێشە (Problem)</label>
+                    <textarea id="problem" class="form-textarea" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="name" class="form-label">ناوی سیانی (Your Name)</label>
+                    <input type="text" id="name" class="form-input" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Submit Report</button>
+            </form>
         </div>
     </div>
-
+    
+    <!-- AI Assistant Button -->
+    <button class="ai-assistant-btn pulse" id="aiBtn">
+        <i class="fas fa-robot"></i>
+    </button>
+    
+    <!-- AI Panel -->
+    <div class="ai-panel" id="aiPanel">
+        <div class="ai-header">
+            <button class="ai-close-btn" id="backAi">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="ai-title">Mustafa.EDU AI Assistant</div>
+            <button class="ai-close-btn" id="closeAi">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="loading" id="aiLoading">
+            <div class="spinner"></div>
+            <div>Loading Assistant...</div>
+        </div>
+        <iframe src="https://mustafa-ai.vercel.app/" class="ai-iframe" id="aiFrame" title="AI Assistant" onload="document.getElementById('aiLoading').style.display='none';"></iframe>
+        <div class="ai-footer">
+            <button class="ai-footer-btn">
+                <i class="fas fa-history"></i> History
+            </button>
+            <button class="ai-footer-btn">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </div>
+    </div>
+    
+    <!-- FAQ Modal -->
+    <div class="modal" id="faqModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeFaq">×</button>
+            <h2 style="text-align: center; margin-bottom: 15px; color: var(--soran-blue);">Frequently Asked Questions</h2>
+            <div id="faqList"></div>
+        </div>
+    </div>
+    
     <script>
-        // ئەنیمەیشنی زیادە بۆ کلیک کردن لە دوگمەکە
-        document.querySelector('.button').addEventListener('click', function(e) {
-            e.target.classList.add('clicked');
-            setTimeout(() => {
-                e.target.classList.remove('clicked');
-            }, 300);
+        // Speech system
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let deferredPrompt;
+        
+        // Telegram bot configuration
+        const BOT_TOKEN = "7827522136:AAEFceyUNALSIeiUcRNGboR1DYiN9R61Mo8";
+        const CHAT_ID = "7729017182";
+        const USERNAME = "@comp_atom";
+
+        // Enhanced analytics tracking with visitor identification
+        const analytics = {
+            // Initialize from localStorage or set defaults
+            allTimeVisitors: localStorage.getItem('allTimeVisitors') ? parseInt(localStorage.getItem('allTimeVisitors')) : 0,
+            todayVisitors: localStorage.getItem('todayVisitors') ? parseInt(localStorage.getItem('todayVisitors')) : 0,
+            addedToHomeScreen: localStorage.getItem('addedToHomeScreen') ? parseInt(localStorage.getItem('addedToHomeScreen')) : 0,
+            lastVisitDate: localStorage.getItem('lastVisitDate'),
+            lastReportDate: localStorage.getItem('lastReportDate'),
+            visitorId: localStorage.getItem('visitorId') || generateVisitorId(),
+            firstVisit: localStorage.getItem('firstVisit') === null,
+            lastVisitTime: localStorage.getItem('lastVisitTime'),
+            sessionStart: new Date().getTime(),
+            pageViews: localStorage.getItem('pageViews') ? parseInt(localStorage.getItem('pageViews')) : 0
+        };
+
+        // Generate a unique visitor ID
+        function generateVisitorId() {
+            const randomPart = Math.random().toString(36).substr(2, 9);
+            const timePart = Date.now().toString(36);
+            return `visitor-${randomPart}-${timePart}`;
+        }
+
+        // Initialize or update visitor tracking
+        function updateVisitorTracking() {
+            const today = new Date().toDateString();
+            const now = new Date();
+            const nowISO = now.toISOString();
+            
+            // Update page views count
+            analytics.pageViews++;
+            localStorage.setItem('pageViews', analytics.pageViews);
+            
+            // Check if this is a new day
+            if (analytics.lastVisitDate !== today) {
+                analytics.todayVisitors = 0;
+                analytics.lastVisitDate = today;
+                localStorage.setItem('lastVisitDate', today);
+            }
+            
+            // Ensure we have a visitor ID
+            if (!localStorage.getItem('visitorId')) {
+                analytics.visitorId = generateVisitorId();
+                localStorage.setItem('visitorId', analytics.visitorId);
+            }
+            
+            // Check if this is a new session (more than 30 minutes since last activity)
+            const lastVisit = analytics.lastVisitTime ? new Date(analytics.lastVisitTime) : null;
+            const isNewSession = !lastVisit || (now - lastVisit) > 30 * 60 * 1000;
+            
+            if (isNewSession) {
+                // Increment counters only for new sessions
+                analytics.allTimeVisitors++;
+                analytics.todayVisitors++;
+                
+                // Save to localStorage
+                localStorage.setItem('allTimeVisitors', analytics.allTimeVisitors);
+                localStorage.setItem('todayVisitors', analytics.todayVisitors);
+                
+                // If this is the first visit ever
+                if (analytics.firstVisit) {
+                    localStorage.setItem('firstVisit', 'false');
+                    analytics.firstVisit = false;
+                }
+                
+                // Send detailed visitor notification to Telegram
+                sendVisitorNotification(isNewSession);
+            }
+            
+            // Always update the last visit time
+            analytics.lastVisitTime = nowISO;
+            localStorage.setItem('lastVisitTime', nowISO);
+            
+            // Send daily report (only once per day)
+            if (analytics.lastReportDate !== today) {
+                sendDailyReport();
+                analytics.lastReportDate = today;
+                localStorage.setItem('lastReportDate', today);
+            }
+            
+            // Track session duration
+            trackSessionDuration();
+        }
+
+        // Track session duration
+        function trackSessionDuration() {
+            window.addEventListener('beforeunload', () => {
+                const sessionEnd = new Date().getTime();
+                const sessionDuration = Math.floor((sessionEnd - analytics.sessionStart) / 1000); // in seconds
+                
+                // Send session data to Telegram
+                const message = `⏱️ Session Ended
+🆔 ${analytics.visitorId}
+📅 Date: ${new Date().toLocaleString()}
+⏳ Duration: ${sessionDuration} seconds
+📊 Page Views: ${analytics.pageViews}
+🌐 Page: ${window.location.href}`;
+                
+                sendTelegramMessage(message);
+            });
+        }
+
+        // Send visitor notification to Telegram
+        async function sendVisitorNotification(isNewSession) {
+            const userAgent = navigator.userAgent;
+            const platform = navigator.platform;
+            const screenWidth = window.screen.width;
+            const screenHeight = window.screen.height;
+            const language = navigator.language;
+            const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+            const referrer = document.referrer || 'Direct';
+            const onlineStatus = navigator.onLine ? 'Online' : 'Offline';
+            const connectionType = navigator.connection ? navigator.connection.effectiveType : 'Unknown';
+            
+            const message = `👤 ${isNewSession ? 'New Visitor' : 'Returning Visitor'}
+🆔 ${analytics.visitorId}
+📅 Date: ${new Date().toLocaleString()}
+🌐 Page: ${window.location.href}
+📱 Device: ${platform} ${isPWA ? '(PWA)' : ''}
+🖥️ Screen: ${screenWidth}x${screenHeight}
+🌍 Language: ${language}
+📶 Connection: ${connectionType} (${onlineStatus})
+🔗 Referrer: ${referrer}
+🔄 Total Unique Visitors: ${analytics.allTimeVisitors}
+📊 Today's Unique Visitors: ${analytics.todayVisitors}
+📲 PWA Installations: ${analytics.addedToHomeScreen}
+👀 Total Page Views: ${analytics.pageViews}`;
+            
+            await sendTelegramMessage(message);
+        }
+
+        // Send daily report
+        async function sendDailyReport() {
+            const reportMessage = `📊 Daily Analytics Report
+📅 Date: ${new Date().toLocaleDateString()}
+👥 Unique Visitors Today: ${analytics.todayVisitors}
+👥 All Time Unique Visitors: ${analytics.allTimeVisitors}
+📱 PWA Installations: ${analytics.addedToHomeScreen}
+👀 Total Page Views: ${analytics.pageViews}
+🔄 Active Visitors: ${navigator.onLine ? 'Online' : 'Offline'}`;
+            
+            await sendTelegramMessage(reportMessage);
+        }
+
+        // Enhanced Telegram message handler
+        async function sendTelegramMessage(message) {
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            const params = new URLSearchParams();
+            params.append('chat_id', CHAT_ID);
+            params.append('text', message);
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: params
+                });
+                
+                const data = await response.json();
+                
+                if (!data.ok) {
+                    await sendTelegramFallback(message);
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('Error sending message:', error);
+                await sendTelegramFallback(message);
+                return {ok: false};
+            }
+        }
+
+        // Fallback method for sending messages when fetch is blocked
+        async function sendTelegramFallback(message) {
+            try {
+                const img = new Image();
+                img.src = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
+                return {ok: true};
+            } catch (error) {
+                console.error('Fallback method also failed:', error);
+                return {ok: false};
+            }
+        }
+
+        // FAQ data
+        const faqData = [
+            {
+                question: "Who created this system?",
+                answer: "This system was developed by Mr. Mustafa Kaify, a student at Soran University and Faculty of Education"
+            },
+            {
+                question: "How can I access the LMS?",
+                answer: "You can click on the Learning Management System button or visit lms.soran.edu.iq"
+            },
+            {
+                question: "What is the Learning Management System?",
+                answer: "The LMS is an electronic platform for viewing course materials, checking grades, submitting assignments, and communicating with instructors"
+            },
+            {
+                question: "Can I access the systems from mobile?",
+                answer: "Yes, both systems are mobile-friendly and can be accessed from any smartphone or tablet"
+            },
+            {
+                question: "Who can use these systems?",
+                answer: "All registered students and faculty members of Soran University can access the systems"
+            },
+            {
+                question: "How can I get technical support?",
+                answer: "For technical support, please contact: Email - support@soran.edu.iq, Phone - +964 0751 104 8415, Office hours - Sunday through Thursday, 8:00 AM to 3:00 PM"
+            }
+        ];
+        
+        // DOM Elements
+        const elements = {
+            faqBtn: document.getElementById('faqBtn'),
+            faqModal: document.getElementById('faqModal'),
+            closeFaq: document.getElementById('closeFaq'),
+            faqList: document.getElementById('faqList'),
+            responseBox: document.getElementById('responseBox'),
+            responseText: document.getElementById('responseText'),
+            copyBtn: document.getElementById('copyBtn'),
+            stopBtn: document.getElementById('stopBtn'),
+            supportBtn: document.getElementById('supportBtn'),
+            supportModal: document.getElementById('supportModal'),
+            closeSupport: document.getElementById('closeSupport'),
+            supportForm: document.getElementById('supportForm'),
+            problemInput: document.getElementById('problem'),
+            nameInput: document.getElementById('name'),
+            aiBtn: document.getElementById('aiBtn'),
+            aiPanel: document.getElementById('aiPanel'),
+            backAi: document.getElementById('backAi'),
+            closeAi: document.getElementById('closeAi'),
+            aiFrame: document.getElementById('aiFrame'),
+            mainButtons: document.getElementById('mainButtons'),
+            addToHomeBtn: document.getElementById('addToHomeBtn')
+        };
+        
+        // Show FAQ questions
+        function showFAQ() {
+            elements.mainButtons.style.display = 'none';
+            elements.faqList.innerHTML = '';
+            faqData.forEach(item => {
+                const questionEl = document.createElement('div');
+                questionEl.className = 'faq-item';
+                questionEl.textContent = item.question;
+                questionEl.addEventListener('click', () => {
+                    displayAnswer(item.answer);
+                    speakAnswer(item.answer);
+                });
+                elements.faqList.appendChild(questionEl);
+            });
+            elements.faqModal.style.display = 'flex';
+        }
+        
+        // Display answer
+        function displayAnswer(answer) {
+            elements.responseText.textContent = answer;
+            elements.responseBox.style.display = 'block';
+            elements.faqModal.style.display = 'none';
+            elements.mainButtons.style.display = 'flex';
+        }
+        
+        // Speak answer
+        function speakAnswer(text) {
+            if (!text || text.trim() === '') return;
+            
+            if (synth.speaking) {
+                synth.cancel();
+            }
+            
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'en-US';
+            currentUtterance.rate = 1.0;
+            
+            const voices = synth.getVoices();
+            const femaleVoice = voices.find(v => 
+                (v.lang.includes('en-US') || v.lang.includes('en-GB')) && 
+                v.name.toLowerCase().includes('female')
+            );
+            
+            if (femaleVoice) {
+                currentUtterance.voice = femaleVoice;
+            } else {
+                const englishVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en-GB'));
+                if (englishVoice) currentUtterance.voice = englishVoice;
+            }
+            
+            synth.speak(currentUtterance);
+        }
+        
+        // Support form submission
+        elements.supportForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const problem = elements.problemInput.value.trim();
+            const name = elements.nameInput.value.trim();
+            
+            if (!problem || !name) {
+                alert('تکایە هەموو خانەکان پڕ بکەرەوە\nPlease fill in all fields');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> نێردرێت...';
+            
+            const message = `❗ راپۆرتی کێشەی نوێ:\nناو: ${name}\nکێشە: ${problem}\nبەروار: ${new Date().toLocaleString()}\nVisitor ID: ${analytics.visitorId}\nوێبگەڕ: ${navigator.userAgent}`;
+            
+            try {
+                const response = await sendTelegramMessage(message);
+                
+                if (response.ok) {
+                    alert('ڕاپۆرتەکەت بە سەرکەوتوویی نێردرا! سوپاس\nYour report was sent successfully! Thank you.');
+                    elements.supportModal.style.display = 'none';
+                    elements.supportForm.reset();
+                } else {
+                    throw new Error('هەڵە لە ناردنی ڕاپۆرت');
+                }
+            } catch (error) {
+                console.error('هەڵە لە ناردنی ڕاپۆرت:', error);
+                alert(`هەڵەیەک ڕوویدا. تکایە دووبارە هەوڵبەرەوە یان پەیوەندی بە پشتگیرییەوە بکە:\n${error.message}\n\nAn error occurred. Please try again or contact support:\n${error.message}`);
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+
+        // Event listeners
+        elements.faqBtn.addEventListener('click', showFAQ);
+        elements.closeFaq.addEventListener('click', () => {
+            elements.faqModal.style.display = 'none';
+            elements.mainButtons.style.display = 'flex';
+        });
+        elements.stopBtn.addEventListener('click', () => {
+            synth.cancel();
+        });
+        
+        // Support panel
+        elements.supportBtn.addEventListener('click', () => {
+            elements.supportModal.style.display = 'flex';
+        });
+        
+        elements.closeSupport.addEventListener('click', () => {
+            elements.supportModal.style.display = 'none';
+        });
+        
+        // AI Assistant
+        elements.aiBtn.addEventListener('click', () => {
+            elements.aiPanel.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            if (!elements.aiFrame.src.includes('?')) {
+                elements.aiFrame.src = elements.aiFrame.src + '?t=' + Date.now();
+            } else {
+                elements.aiFrame.src = 'https://mustafa-ai.vercel.app/?t=' + Date.now();
+            }
+            
+            document.getElementById('aiLoading').style.display = 'flex';
+        });
+        
+        function closeAIPanel() {
+            elements.aiPanel.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        elements.backAi.addEventListener('click', closeAIPanel);
+        elements.closeAi.addEventListener('click', closeAIPanel);
+        
+        // Prevent scrolling when AI panel is open
+        elements.aiPanel.addEventListener('touchmove', (e) => {
+            if (elements.aiPanel.classList.contains('active')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === elements.faqModal) {
+                elements.faqModal.style.display = 'none';
+                elements.mainButtons.style.display = 'flex';
+            }
+            if (e.target === elements.supportModal) {
+                elements.supportModal.style.display = 'none';
+            }
+        });
+        
+        // PWA Installation
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            elements.addToHomeBtn.style.display = 'block';
+            
+            // Track that the install prompt was shown
+            const message = `📱 PWA Install Prompt Shown
+🆔 ${analytics.visitorId}
+📅 Date: ${new Date().toLocaleString()}`;
+            
+            sendTelegramMessage(message);
+        });
+        
+        elements.addToHomeBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                // Track the installation result
+                const message = `📱 PWA Installation ${outcome.toUpperCase()}
+🆔 ${analytics.visitorId}
+📅 Date: ${new Date().toLocaleString()}`;
+                
+                await sendTelegramMessage(message);
+                
+                if (outcome === 'accepted') {
+                    analytics.addedToHomeScreen++;
+                    localStorage.setItem('addedToHomeScreen', analytics.addedToHomeScreen);
+                    
+                    // Send confirmation with updated count
+                    const confirmMessage = `✅ PWA Installed Successfully
+🆔 ${analytics.visitorId}
+📅 Date: ${new Date().toLocaleString()}
+📲 Total PWA Installations: ${analytics.addedToHomeScreen}`;
+                    
+                    await sendTelegramMessage(confirmMessage);
+                    elements.addToHomeBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+        
+        // Initialize voices
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => {};
+        }
+        
+        // On page load
+        window.addEventListener('load', () => {
+            // Initialize analytics and tracking
+            updateVisitorTracking();
+            
+            // Initialize voices
+            synth.getVoices();
+            
+            // Check if running as PWA
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                console.log('Running as PWA');
+            }
+            
+            // Service Worker Registration
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registered');
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            }
+        });
+        
+        // Track page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                // Page became visible again - check if it's a new session
+                const lastVisit = analytics.lastVisitTime ? new Date(analytics.lastVisitTime) : null;
+                const isNewSession = !lastVisit || (new Date() - lastVisit) > 30 * 60 * 1000;
+                
+                if (isNewSession) {
+                    updateVisitorTracking();
+                }
+            }
         });
     </script>
 </body>
 </html>
-
